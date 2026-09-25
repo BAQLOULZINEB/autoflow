@@ -18,7 +18,7 @@ from sqlalchemy import select
 
 from . import clock
 from . import analytics as bi
-from .config import get_settings
+from .config import DATA_DIR, get_settings
 from .db import Booking, Customer, Draft, Event, FollowUp, Request, Review, Setting, Vehicle, init_db, session
 from .excel_import import import_workbook
 from .rules import load_rules
@@ -36,10 +36,24 @@ image_warmer = ThreadPoolExecutor(max_workers=3, thread_name_prefix="vehicle-ima
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    with session() as db:
-        if settings.seed_demo and db.get(Setting, "seeded_at") is None:
-            db.close()
+    if settings.seed_demo:
+        # A Vercel function starts from an empty /tmp SQLite database after a
+        # cold start. The workflow seed creates the operational tables, while
+        # the workbook seed creates the BI tables (locations, expenses and
+        # appointments). Keeping both together prevents a half-seeded UI where
+        # Fleet works but dashboard/garage endpoints raise "no such table".
+        with session() as db:
+            workflow_seeded = db.get(Setting, "seeded_at") is not None
+            workbook_seeded = db.get(Setting, "excel_imported_at") is not None
+        if not workflow_seeded:
             orch.reset_and_seed()
+        if settings.auto_seed_workbook and not workbook_seeded:
+            workbook = DATA_DIR / "autoflow_agence.xlsx"
+            if not workbook.exists():
+                raise RuntimeError(f"Demo workbook is missing: {workbook}")
+            result = import_workbook(workbook.read_bytes())
+            if not result.ok:
+                raise RuntimeError(f"Demo workbook seed failed: {result.errors}")
     yield
 
 

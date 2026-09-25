@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     admin_token: str = "change-me-admin"
     cors_origins: str = "http://localhost:5173"
     seed_demo: bool = True
+    auto_seed_workbook: bool = False
 
     @property
     def cors_list(self) -> list[str]:

@@ -13,6 +13,7 @@ if _BACKEND not in sys.path:
 os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/autoflow.db")
 os.environ.setdefault("CHECKPOINT_DB", "/tmp/checkpoints.db")
 os.environ.setdefault("CORS_ORIGINS", "*")
+os.environ.setdefault("AUTO_SEED_WORKBOOK", "true")
 
 from fastapi import FastAPI
 
