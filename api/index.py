@@ -1,14 +1,7 @@
-"""Vercel Python serverless entry (root-level).
-
-Vercel auto-detects `/api/*.py` as serverless functions at the repo root.
-This file exposes the FastAPI app under /api/*. Backend code lives in `backend/`,
-so we add it to sys.path before importing. Serverless FS is read-only except /tmp,
-so pilot DB and checkpoints live in /tmp (ephemeral).
-
-For persistence, set DATABASE_URL=postgresql://... in the Vercel project.
-"""
+"""Vercel Python serverless entry (root-level)."""
 import os
 import sys
+import traceback
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _BACKEND = os.path.join(_ROOT, "backend")
@@ -19,4 +12,27 @@ os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/autoflow.db")
 os.environ.setdefault("CHECKPOINT_DB", "/tmp/checkpoints.db")
 os.environ.setdefault("CORS_ORIGINS", "*")
 
-from app.main import app  # noqa: E402,F401
+_import_error: str | None = None
+try:
+    from app.main import app  # noqa: F401
+except Exception:
+    _import_error = traceback.format_exc()
+    from fastapi import FastAPI
+    app = FastAPI()
+
+    @app.get("/{full_path:path}")
+    def _report(full_path: str):
+        return {
+            "error": "Backend import failed",
+            "trace": _import_error,
+            "cwd": os.getcwd(),
+            "backend_path": _BACKEND,
+            "backend_exists": os.path.isdir(_BACKEND),
+            "listing_root": sorted(os.listdir(_ROOT))[:40] if os.path.isdir(_ROOT) else None,
+            "listing_backend": sorted(os.listdir(_BACKEND))[:40] if os.path.isdir(_BACKEND) else None,
+            "sys_path": sys.path[:10],
+        }
+
+    @app.post("/{full_path:path}")
+    def _report_post(full_path: str):
+        return _report(full_path)
