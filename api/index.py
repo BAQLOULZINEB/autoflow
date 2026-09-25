@@ -1,4 +1,6 @@
 """Vercel Python serverless entry (root-level)."""
+from __future__ import annotations
+
 import os
 import sys
 import traceback
@@ -12,7 +14,7 @@ os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/autoflow.db")
 os.environ.setdefault("CHECKPOINT_DB", "/tmp/checkpoints.db")
 os.environ.setdefault("CORS_ORIGINS", "*")
 
-_import_error: str | None = None
+_import_error = None
 try:
     from app.main import app  # noqa: F401
 except Exception:
@@ -20,8 +22,7 @@ except Exception:
     from fastapi import FastAPI
     app = FastAPI()
 
-    @app.get("/{full_path:path}")
-    def _report(full_path: str):
+    def _report():
         return {
             "error": "Backend import failed",
             "trace": _import_error,
@@ -33,6 +34,10 @@ except Exception:
             "sys_path": sys.path[:10],
         }
 
+    @app.get("/{full_path:path}")
+    def _get(full_path: str):
+        return _report()
+
     @app.post("/{full_path:path}")
-    def _report_post(full_path: str):
-        return _report(full_path)
+    def _post(full_path: str):
+        return _report()
