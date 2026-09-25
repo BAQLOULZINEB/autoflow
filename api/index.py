@@ -14,13 +14,16 @@ os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/autoflow.db")
 os.environ.setdefault("CHECKPOINT_DB", "/tmp/checkpoints.db")
 os.environ.setdefault("CORS_ORIGINS", "*")
 
+from fastapi import FastAPI
+
+app = FastAPI()
 _import_error = None
+
 try:
-    from app.main import app  # noqa: F401
+    from app.main import app as _real_app  # noqa: F401
+    app = _real_app
 except Exception:
     _import_error = traceback.format_exc()
-    from fastapi import FastAPI
-    app = FastAPI()
 
     def _report():
         return {
