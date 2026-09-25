@@ -81,7 +81,7 @@ export default function BIDashboard() {
       return d.getDate().toString()
     }),
     datasets: [{
-      label: 'CA (MAD)',
+      label: 'Revenus (MAD)',
       data: revDaily.map(p => p.revenue),
       borderColor: COLORS.teal,
       backgroundColor: (ctx) => {
@@ -124,7 +124,7 @@ export default function BIDashboard() {
   const catBarData: ChartData<'bar'> = {
     labels: revByCat.map(c => c.category),
     datasets: [{
-      label: 'CA',
+      label: 'Revenus',
       data: revByCat.map(c => c.revenue),
       backgroundColor: revByCat.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
       borderRadius: 6,
@@ -181,7 +181,7 @@ export default function BIDashboard() {
   const monthlyBarData: ChartData<'bar'> = {
     labels: revMonthly.map(m => m.month),
     datasets: [{
-      label: 'CA (MAD)',
+      label: 'Revenus (MAD)',
       data: revMonthly.map(m => m.revenue),
       backgroundColor: revMonthly.map((_, i) => [COLORS.teal, COLORS.amber, COLORS.violet][i % 3]),
       borderRadius: 8,
@@ -234,6 +234,16 @@ export default function BIDashboard() {
 
   return (
     <>
+      <div className="welcome-bar">
+        <div className="welcome-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0e9c99" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div>
+          <h2>Bienvenue dans votre espace de gestion</h2>
+          <p>Voici un résumé de l'activité de votre agence pour {MONTHS[month]} 2026</p>
+        </div>
+      </div>
+
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="topbar">
         <div>
@@ -251,7 +261,7 @@ export default function BIDashboard() {
               <option key={k} value={k}>{v} 2026</option>
             ))}
           </select>
-          {bi && <span className="tag">📊 {fmtNum(bi.rentals_month)} locations ce mois</span>}
+          {bi && <span className="tag">{fmtNum(bi.rentals_month)} locations ce mois</span>}
         </div>
       </div>
 
@@ -259,30 +269,30 @@ export default function BIDashboard() {
       {bi && (
         <div className="grid c5" style={{ marginBottom: 16 }}>
           <KPI
-            label="Chiffre d'affaires"
+            label="Revenus du mois"
             value={fmtMAD(bi.revenue_month)}
             trend={bi.revenue_delta_pct}
-            hint="vs mois précédent"
+            hint="par rapport au mois dernier"
           />
           <KPI
-            label="Locations actives"
+            label="Voitures louées"
             value={String(bi.active_rentals)}
-            hint={`${bi.rented_today} / ${bi.total_vehicles} véhicules`}
+            hint={`${bi.rented_today} louées sur ${bi.total_vehicles} véhicules`}
           />
           <KPI
-            label="Taux d'occupation"
+            label="Occupation de la flotte"
             value={`${bi.occupancy_pct}%`}
-            hint={`${bi.in_maintenance} en maintenance`}
+            hint={`${bi.in_maintenance} véhicule(s) au garage`}
             color={bi.occupancy_pct > 70 ? COLORS.green : bi.occupancy_pct > 40 ? COLORS.amber : COLORS.rose}
           />
           <KPI
-            label="Dépenses"
+            label="Dépenses du mois"
             value={fmtMAD(bi.expenses_month)}
             trend={expDelta}
-            hint="vs mois précédent"
+            hint="par rapport au mois dernier"
           />
           <KPI
-            label="Résultat net"
+            label="Bénéfice net"
             value={fmtMAD(bi.profit_month)}
             color={profitColor}
             hint={bi.profit_month >= 0 ? 'Bénéfice' : 'Déficit'}
@@ -290,30 +300,40 @@ export default function BIDashboard() {
         </div>
       )}
 
+      <div className="section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Suivi des revenus
+      </div>
+
       {/* ── Revenue Area Chart ─────────────────────────────────────────── */}
       <div className="card chart-card" style={{ marginBottom: 16 }}>
-        <h2>Évolution du chiffre d'affaires — {MONTHS[month]} 2026</h2>
+        <h2>Revenus journaliers — {MONTHS[month]} 2026</h2>
         <div style={{ height: 260 }}>
           <Line data={dailyData} options={dailyOpts} />
         </div>
       </div>
 
+      <div className="section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg>
+        Détails par catégorie
+      </div>
+
       {/* ── 3 Charts Row ───────────────────────────────────────────────── */}
       <div className="grid c3" style={{ marginBottom: 16 }}>
         <div className="card chart-card">
-          <h2>CA par segment</h2>
+          <h2>Revenus par catégorie de véhicule</h2>
           <div style={{ height: 220 }}>
             <Bar data={catBarData} options={catBarOpts} />
           </div>
         </div>
         <div className="card chart-card">
-          <h2>Répartition des dépenses</h2>
+          <h2>Où va l'argent (dépenses)</h2>
           <div style={{ height: 220 }}>
             <Doughnut data={expDonutData} options={donutOpts} />
           </div>
         </div>
         <div className="card chart-card">
-          <h2>Flotte par catégorie</h2>
+          <h2>Composition de la flotte</h2>
           <div style={{ height: 220 }}>
             <Doughnut data={fleetDonutData} options={donutOpts} />
           </div>
@@ -322,16 +342,21 @@ export default function BIDashboard() {
 
       {/* ── Monthly Bar Chart ──────────────────────────────────────────── */}
       <div className="card chart-card" style={{ marginBottom: 16 }}>
-        <h2>Chiffre d'affaires mensuel</h2>
+        <h2>Comparaison des revenus par mois</h2>
         <div style={{ height: 220 }}>
           <Bar data={monthlyBarData} options={monthlyBarOpts} />
         </div>
       </div>
 
+      <div className="section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clients et indicateurs
+      </div>
+
       {/* ── Bottom Row ─────────────────────────────────────────────────── */}
       <div className="grid c2">
         <div className="card chart-card">
-          <h2>Canaux d'acquisition</h2>
+          <h2>D'où viennent les clients</h2>
           <div style={{ height: 200 }}>
             <Bar data={channelBarData} options={channelOpts} />
           </div>
@@ -339,22 +364,22 @@ export default function BIDashboard() {
 
         {bi && (
           <div className="card" style={{ padding: 20 }}>
-            <h2>Indicateurs clés</h2>
+            <h2>Résumé rapide</h2>
             <div className="grid c2" style={{ gap: 12, marginTop: 12 }}>
               <div className="mini-kpi">
-                <div className="mini-label">Durée moy.</div>
+                <div className="mini-label">Durée moyenne de location</div>
                 <div className="mini-value">{bi.avg_rental_days ?? '—'} <small>jours</small></div>
               </div>
               <div className="mini-kpi">
-                <div className="mini-label">Tarif moy.</div>
+                <div className="mini-label">Tarif moyen par jour</div>
                 <div className="mini-value">{bi.avg_daily_rate ? fmtMAD(bi.avg_daily_rate) : '—'} <small>/jour</small></div>
               </div>
               <div className="mini-kpi">
-                <div className="mini-label">Clients ce mois</div>
+                <div className="mini-label">Nombre de clients ce mois</div>
                 <div className="mini-value">{fmtNum(bi.clients_month)}</div>
               </div>
               <div className="mini-kpi">
-                <div className="mini-label">RDV aujourd'hui</div>
+                <div className="mini-label">Rendez-vous aujourd'hui</div>
                 <div className="mini-value">{bi.appointments_today} <small>+ {bi.appointments_week} cette semaine</small></div>
               </div>
             </div>

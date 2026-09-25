@@ -51,7 +51,7 @@ export default function Simulations() {
   return (
     <>
       <div className="topbar">
-        <div><h1>Simulations</h1><div className="sub">Sept cas métier prêts à jouer. Chaque étape passe par le vrai système et vérifie le résultat attendu — c'est à la fois la démo et la suite de tests d'acceptation.</div></div>
+        <div><h1>Tester le système</h1><div className="sub">Lancez des scénarios réalistes pour voir comment le système traite chaque type de demande. Chaque étape est vérifiée automatiquement.</div></div>
         <div className="row-actions" style={{ marginTop: 0 }}>
           {total > 0 && <span className={`tag ${passed === total ? 'good' : 'bad'}`}>{passed}/{total} cas conformes</span>}
           <button className="btn primary" disabled={runningAll || running !== null} onClick={playAll}><IconPlay size={14} /> Tout jouer</button>
@@ -119,7 +119,7 @@ export default function Simulations() {
           )
         })}
       </div>
-      <p className="small muted" style={{ marginTop: 14 }}><IconFlask size={13} /> Les mêmes cas tournent dans <code>backend/tests/test_simulations.py</code>. Un écart ici = un test rouge.</p>
+      <p className="small muted" style={{ marginTop: 14 }}>Ces mêmes scénarios servent aussi de tests automatiques pour garantir que le système fonctionne correctement.</p>
     </>
   )
 }

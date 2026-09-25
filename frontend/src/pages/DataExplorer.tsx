@@ -27,8 +27,8 @@ export default function DataExplorer() {
     <>
       <div className="topbar">
         <div>
-          <h1>Explorateur de données</h1>
-          <div className="sub">Historique complet des locations et dépenses — filtrable par mois</div>
+          <h1>Historique des locations et dépenses</h1>
+          <div className="sub">Consultez toutes vos locations et dépenses passées</div>
         </div>
         <div className="row-actions" style={{ marginTop: 0, gap: 8 }}>
           <select value={month} onChange={e => setMonth(+e.target.value)} style={{ minWidth: 130 }}>
@@ -41,10 +41,10 @@ export default function DataExplorer() {
 
       <div className="tab-bar">
         <button className={tab === 'locations' ? 'active' : ''} onClick={() => setTab('locations')}>
-          📋 Locations ({locations.length})
+          Locations ({locations.length})
         </button>
         <button className={tab === 'expenses' ? 'active' : ''} onClick={() => setTab('expenses')}>
-          💰 Dépenses ({expenses.length})
+          Dépenses ({expenses.length})
         </button>
       </div>
 

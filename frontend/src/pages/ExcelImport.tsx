@@ -43,8 +43,8 @@ export default function ExcelImport() {
     <>
       <div className="topbar">
         <div>
-          <h1>Import Excel</h1>
-          <div className="sub">Charger la base de données de l'agence depuis un fichier Excel (.xlsx)</div>
+          <h1>Importer un fichier Excel</h1>
+          <div className="sub">Ajoutez vos données depuis un fichier Excel</div>
         </div>
       </div>
 
@@ -62,9 +62,9 @@ export default function ExcelImport() {
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
-          <div style={{ fontSize: 48, marginBottom: 12 }}>📁</div>
-          <h2>Glisser-déposer un fichier .xlsx</h2>
-          <p className="muted">ou cliquer pour sélectionner</p>
+          <div style={{ marginBottom: 12 }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0e9c99" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <h2>Glissez votre fichier ici</h2>
+          <p className="muted">ou cliquez pour choisir un fichier</p>
           <p className="muted small">Feuilles attendues : Locations, Flotte, Clients, Depenses, RendezVous</p>
           <input ref={inputRef} type="file" accept=".xlsx,.xlsm" hidden
             onChange={e => { const f = e.target.files?.[0]; if (f) upload(f) }} />
@@ -89,14 +89,14 @@ export default function ExcelImport() {
 
       {error && (
         <div className="banner error" style={{ marginTop: 16 }}>
-          ❌ {error}
+          {error}
         </div>
       )}
 
       {result && (
         <div className="card" style={{ marginTop: 16 }}>
           <h2 style={{ color: result.ok ? 'var(--green)' : 'var(--rose)' }}>
-            {result.ok ? '✅ Import réussi' : '⚠️ Import avec erreurs'}
+            {result.ok ? 'Import réussi' : 'Import avec erreurs'}
           </h2>
 
           <div className="grid c3" style={{ marginTop: 12 }}>
@@ -112,7 +112,7 @@ export default function ExcelImport() {
           {result.warnings.length > 0 && (
             <details style={{ marginTop: 16 }}>
               <summary className="muted" style={{ cursor: 'pointer', fontWeight: 600 }}>
-                ⚠️ {result.warnings.length} avertissement(s)
+                {result.warnings.length} avertissement(s)
               </summary>
               <ul style={{ marginTop: 8, fontSize: 12, color: 'var(--muted)' }}>
                 {result.warnings.slice(0, 30).map((w, i) => <li key={i}>{w}</li>)}
@@ -123,7 +123,7 @@ export default function ExcelImport() {
 
           {result.errors.length > 0 && (
             <div style={{ marginTop: 12, color: 'var(--rose)' }}>
-              {result.errors.map((e, i) => <p key={i}>❌ {e}</p>)}
+              {result.errors.map((e, i) => <p key={i}>{e}</p>)}
             </div>
           )}
         </div>

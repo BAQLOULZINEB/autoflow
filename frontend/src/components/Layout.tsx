@@ -60,34 +60,34 @@ export default function Layout() {
           <Logo />
           <div>
             AutoFlow <span style={{ color: '#0e9c99', fontWeight: 800 }}>Pro</span>
-            <small>Plateforme IA · Location de voitures</small>
+            <small>Gestion intelligente · Location de voitures</small>
           </div>
         </div>
 
         <nav className="nav" aria-label="Navigation principale">
           {/* ─── Analyse & Aide à la décision ─── */}
-          <div className="nav-section">Analyse & Décision</div>
+          <div className="nav-section">Mon Agence</div>
           <NavLink to="/" end><IconDashboard size={16} /><span>Tableau de bord</span></NavLink>
-          <NavLink to="/data"><IconTable size={16} /><span>Données</span></NavLink>
+          <NavLink to="/data"><IconTable size={16} /><span>Historique</span></NavLink>
           <NavLink to="/appointments"><IconCalendar size={16} /><span>Rendez-vous</span></NavLink>
-          <NavLink to="/excel"><IconUpload size={16} /><span>Import Excel</span></NavLink>
+          <NavLink to="/excel"><IconUpload size={16} /><span>Importer un fichier</span></NavLink>
 
-          {/* ─── Opérations & Logistique ─── */}
-          <div className="nav-section">Opérations</div>
-          <NavLink to="/queue"><IconInbox size={16} /><span>File à valider</span>{open > 0 && <span className="pill">{open}</span>}</NavLink>
-          <NavLink to="/live"><IconActivity size={16} /><span>Suivi en direct</span><span className="live-dot" /></NavLink>
-          <NavLink to="/requests"><IconList size={16} /><span>Demandes</span></NavLink>
+          {/* ─── Gestion des Demandes ─── */}
+          <div className="nav-section">Gestion des Demandes</div>
+          <NavLink to="/queue"><IconInbox size={16} /><span>À traiter</span>{open > 0 && <span className="pill">{open}</span>}</NavLink>
+          <NavLink to="/live"><IconActivity size={16} /><span>Suivi en temps réel</span><span className="live-dot" /></NavLink>
+          <NavLink to="/requests"><IconList size={16} /><span>Toutes les demandes</span></NavLink>
           <NavLink to="/new"><IconPlus size={16} /><span>Nouvelle demande</span></NavLink>
-          <NavLink to="/fleet"><IconCar size={16} /><span>Flotte & règles</span></NavLink>
+          <NavLink to="/fleet"><IconCar size={16} /><span>Mes voitures</span></NavLink>
 
-          {/* ─── Ingénierie ─── */}
-          <div className="nav-section">Ingénierie</div>
-          <NavLink to="/architecture"><IconLayers size={16} /><span>Architecture</span></NavLink>
-          <NavLink to="/simulations"><IconFlask size={16} /><span>Simulations</span></NavLink>
+          {/* ─── Système ─── */}
+          <div className="nav-section">Système</div>
+          <NavLink to="/architecture"><IconLayers size={16} /><span>Comment ça marche</span></NavLink>
+          <NavLink to="/simulations"><IconFlask size={16} /><span>Tester le système</span></NavLink>
         </nav>
 
         <div className="side-block">
-          <label htmlFor="actor">Utilisateur</label>
+          <label htmlFor="actor">Connecté en tant que</label>
           <select id="actor" value={actor} onChange={e => { setActor(e.target.value); actorStore.set(e.target.value) }}>
             <option value="staff:Salma">Salma — équipe</option>
             <option value="staff:Youssef">Youssef — équipe</option>
@@ -100,7 +100,7 @@ export default function Layout() {
 
         {!present && (
           <div className="side-block demo">
-            <h3>Démo</h3>
+            <h3>Mode démonstration</h3>
             <div className="small clock"><IconClock size={12} /> {clock ? new Date(clock).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '…'}</div>
             <div className="row-actions" style={{ marginTop: 6 }}>
               {scen.map(s => (

@@ -41,47 +41,47 @@ export default function Architecture() {
   useEffect(() => { api.graph().then(g => setGraph(g.mermaid)) }, [])
   return (
     <>
-      <div className="topbar"><div><h1>Architecture</h1><div className="sub">1 orchestrateur + 3 agents spécialisés + humain dans la boucle. Le graphe de droite est généré par LangGraph à partir du code réel.</div></div></div>
+      <div className="topbar"><div><h1>Comment fonctionne le système</h1><div className="sub">Le système traite chaque demande automatiquement, mais c'est toujours vous qui décidez. Voici comment il fonctionne étape par étape.</div></div></div>
       <div className="card" style={{ marginBottom: 14 }}>
-        <h2>Workflow d'orchestration (vue technique)</h2>
+        <h2>Parcours d'une demande client</h2>
         <WorkflowSvg />
-        <p className="small muted" style={{ marginTop: 8 }}>Même diagramme que dans « Suivi en direct » : là-bas, le chemin réellement suivi par chaque demande s'allume.</p>
+        <p className="small muted" style={{ marginTop: 8 }}>Ce diagramme montre le chemin que suit chaque demande dans le système. Les nœuds roses nécessitent votre validation.</p>
       </div>
       <div className="grid c2" style={{ alignItems: 'start' }}>
         <div className="card">
-          <h2>Vue métier</h2>
+          <h2>Vue d'ensemble simplifiée</h2>
           <Diagram code={OVERVIEW} id="ov" />
           <div className="legend"><span><span className="dot" style={{ background: '#DDF3F2', border: '1px solid #0E9C99' }} />agent</span><span><span className="dot" style={{ background: '#0B1F3A' }} />orchestrateur / humain</span><span>— flux nominal · ┄ contrôle humain</span></div>
         </div>
         <div className="card">
-          <h2>Graphe LangGraph (source : <code>GET /api/graph</code>)</h2>
+          <h2>Graphe technique détaillé</h2>
           {graph ? <Diagram code={graph} id="lg" /> : <p className="muted">Chargement…</p>}
-          <p className="small muted">Le nœud <code>human_review</code> est un <code>interrupt()</code> : l'exécution est suspendue et persistée (checkpointer SQLite) jusqu'à la décision dans cet espace admin. « Compléter » renvoie vers <code>availability</code> via <code>Command(goto=…)</code>.</p>
+          <p className="small muted">Quand le système arrive à l'étape « validation humaine », il s'arrête et attend votre décision. Vous pouvez approuver, modifier ou refuser depuis la page « À traiter ».</p>
         </div>
       </div>
       <div className="card" style={{ marginTop: 14 }}>
-        <h2>Couche BI & Import de données</h2>
+        <h2>Vos données, vos graphiques</h2>
         <div className="grid c3">
           <div>
-            <h3>Pipeline Excel → SQLite</h3>
-            <p className="small muted">Import atomique d'un classeur .xlsx (5 feuilles : Flotte, Clients, Locations, Dépenses, RendezVous). Validation CIN marocain, détection doublons, correction automatique des dates inversées. Parsing via <code>openpyxl</code>.</p>
+            <h3>Import depuis Excel</h3>
+            <p className="small muted">Chargez votre fichier Excel avec les feuilles Flotte, Clients, Locations, Dépenses et Rendez-vous. Le système vérifie automatiquement les erreurs (dates inversées, doublons, CIN invalides).</p>
           </div>
           <div>
-            <h3>Moteur d'analytique temps réel</h3>
-            <p className="small muted">15+ endpoints BI calculés à la volée via SQLAlchemy (jamais de KPI stockés). CA journalier/mensuel, répartition dépenses, taux d'occupation par véhicule, ranking clients, canaux d'acquisition.</p>
+            <h3>Calcul automatique des chiffres</h3>
+            <p className="small muted">Tous les graphiques et indicateurs sont calculés en temps réel à partir de vos données. Revenus, dépenses, taux d'occupation, classement clients — tout est mis à jour automatiquement.</p>
           </div>
           <div>
-            <h3>Visualisation Chart.js</h3>
-            <p className="small muted">6 types de graphiques (area, bar, doughnut, horizontal bar). Palette 12 couleurs, tooltips en MAD, responsive. Données formatées côté client avec <code>react-chartjs-2</code>.</p>
+            <h3>Graphiques visuels</h3>
+            <p className="small muted">6 types de graphiques interactifs pour visualiser vos données : courbes, barres, camemberts. Survolez chaque élément pour voir les détails en dirhams (MAD).</p>
           </div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 14 }}>
         <h2>Principes de conception</h2>
         <div className="grid c3">
-          <div><h3>Les agents proposent, l'orchestrateur route, l'humain décide</h3><p className="small muted">Aucune décision commerciale (prix, confirmation, réclamation) n'est prise par le système. Le routage suit une matrice d'escalade explicite.</p></div>
-          <div><h3>Aucune disponibilité inventée</h3><p className="small muted">L'agent Disponibilité est du code déterministe sur la table flotte + règles. L'agent Intake ne garde un champ que s'il cite un passage exact du message.</p></div>
-          <div><h3>Tout est tracé, tout est mesurable</h3><p className="small muted">Chaque transition écrit un événement (acteur, raison, horodatage). Les KPI sont calculés depuis le journal, jamais stockés.</p></div>
+          <div><h3>Le système propose, vous décidez</h3><p className="small muted">Le système ne prend jamais de décision commerciale à votre place (prix, confirmation, réclamation). Il prépare le dossier, vous validez.</p></div>
+          <div><h3>Données toujours fiables</h3><p className="small muted">La vérification des disponibilités est basée sur vos données réelles, jamais sur des estimations. Chaque information est vérifiable.</p></div>
+          <div><h3>Tout est enregistré</h3><p className="small muted">Chaque action est tracée avec l'utilisateur, la raison et la date. Vous pouvez toujours retrouver qui a fait quoi et quand.</p></div>
         </div>
       </div>
       <div className="card" style={{ marginTop: 14 }}>

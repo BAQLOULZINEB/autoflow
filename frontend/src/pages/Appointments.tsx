@@ -26,8 +26,8 @@ export default function Appointments() {
     <>
       <div className="topbar">
         <div>
-          <h1>Rendez-vous & Planning</h1>
-          <div className="sub">Agenda de l'agence — entretiens, visites techniques, clients</div>
+          <h1>Rendez-vous et Planning</h1>
+          <div className="sub">Tous les rendez-vous de votre agence</div>
         </div>
         <div className="row-actions" style={{ marginTop: 0 }}>
           <span className="tag" style={{ background: '#059669', color: '#fff' }}>{todayItems.length} aujourd'hui</span>
@@ -39,17 +39,17 @@ export default function Appointments() {
 
       {todayItems.length > 0 && (
         <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid #059669' }}>
-          <h2 style={{ color: '#059669', marginBottom: 12 }}>📅 Aujourd'hui</h2>
+          <h2 style={{ color: '#059669', marginBottom: 12 }}>Aujourd'hui</h2>
           <div className="grid c2" style={{ gap: 8 }}>
             {todayItems.map(a => (
               <div key={a.id} className="card" style={{ padding: '10px 14px', display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div style={{ fontWeight: 800, fontSize: 18, color: 'var(--teal)', minWidth: 50 }}>{a.time}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700 }}>{a.type}</div>
-                  <div className="muted small">{a.plate && `🚗 ${a.plate}`} {a.cin && `· ${a.cin}`} {a.note && `— ${a.note}`}</div>
+                  <div className="muted small">{a.plate && a.plate} {a.cin && `· ${a.cin}`} {a.note && `— ${a.note}`}</div>
                 </div>
                 <span className={`badge ${a.status === 'fait' ? 's-confirmed' : 's-pending_customer'}`}>
-                  {a.status === 'fait' ? '✓ Fait' : '⏳ Prévu'}
+                  {a.status === 'fait' ? 'Fait' : 'Prévu'}
                 </span>
               </div>
             ))}
