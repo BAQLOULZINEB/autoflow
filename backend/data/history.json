@@ -1,0 +1,587 @@
+[
+ {
+  "days_ago": 41.29,
+  "customer": "Driss L.",
+  "channel": "phone",
+  "message": "Salam alikoum, je voudrais louer une citadine du 18 au 22 août, prise à Hay Riad. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-08-18",
+   "return_date": "2026-08-22",
+   "vehicle_category": "citadine",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 40.3,
+  "customer": "Kenza A.",
+  "channel": "form",
+  "message": "Salam alikoum, on est des clients réguliers, une suv du 19 au 21 août à l'aéroport Rabat-Salé, un petit geste sur le prix serait apprécié 🙏",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-08-19",
+   "return_date": "2026-08-21",
+   "vehicle_category": "suv",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 38.33,
+  "customer": "Driss L.",
+  "channel": "walk-in",
+  "message": "Slt, besoin d'une berline automatique pour la période du 7 au 11 septembre, retour l'aéroport Rabat-Salé. Dites-moi le prix svp.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-07",
+   "return_date": "2026-09-11",
+   "vehicle_category": "berline",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 37.76,
+  "customer": "Yassine D.",
+  "channel": "facebook",
+  "message": "Bonjour, dispo une utilitaire pour le week-end prochain ?",
+  "outcome": "complete_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-09",
+   "return_date": "2026-09-12",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 37.37,
+  "customer": "Zineb L.",
+  "channel": "whatsapp",
+  "message": "Salam, dispo une berline du 3/09 au 4/09 ? Départ l'aéroport Rabat-Salé. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-03",
+   "return_date": "2026-09-04",
+   "vehicle_category": "berline",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 36.63,
+  "customer": "Meryem E.",
+  "channel": "phone",
+  "message": "Salam, dispo une utilitaire pour le week-end prochain ?",
+  "outcome": "close",
+  "complete_fields": {
+   "pickup_date": "2026-08-21",
+   "return_date": "2026-08-26",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 36.54,
+  "customer": "Famille Berrada",
+  "channel": "facebook",
+  "message": "Bonjour l'équipe, une citadine du 27 août au 17 septembre (3 semaines), l'aéroport Rabat-Salé. Merci d'avance !",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-08-27",
+   "return_date": "2026-09-17",
+   "vehicle_category": "citadine",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 35.84,
+  "customer": "Jean-Marc N.",
+  "channel": "whatsapp",
+  "message": "Bonjour l'équipe, je voudrais louer une citadine du 11 au 14 septembre, prise à Rabat. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-11",
+   "return_date": "2026-09-14",
+   "vehicle_category": "citadine",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 34.97,
+  "customer": "Salma O.",
+  "channel": "walk-in",
+  "message": "Hello, besoin d'une berline pour la période du 11 au 18 septembre, retour Agdal.",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-11",
+   "return_date": "2026-09-18",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 34.54,
+  "customer": "Laura T.",
+  "channel": "whatsapp",
+  "message": "Bonjour, je veux modifier ma réservation du 17 septembre : décaler au 19 septembre si possible. C'est possible ?",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-17",
+   "return_date": "2026-09-19",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 32.0,
+  "customer": "Rim Z.",
+  "channel": "form",
+  "message": "Salam, dispo une berline pour le week-end prochain ? Je suis preneur si dispo.",
+  "outcome": "close",
+  "complete_fields": {
+   "pickup_date": "2026-09-03",
+   "return_date": "2026-09-05",
+   "vehicle_category": "berline",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 30.77,
+  "customer": "Ahmed E.",
+  "channel": "walk-in",
+  "message": "Bonjour, le véhicule rendu hier avait un problème de frein et personne ne répond au téléphone. Ce n'est pas normal.",
+  "outcome": "close",
+  "complete_fields": {
+   "pickup_date": "2026-08-25",
+   "return_date": "2026-08-27",
+   "vehicle_category": "suv",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 27.49,
+  "customer": "Famille Alaoui",
+  "channel": "walk-in",
+  "message": "Salam alikoum, je cherche une voiture berline du 2 au 9 septembre. Prise l'aéroport Rabat-Salé. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-02",
+   "return_date": "2026-09-09",
+   "vehicle_category": "berline",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 27.39,
+  "customer": "Aya C.",
+  "channel": "whatsapp",
+  "message": "Salam, je veux modifier ma réservation du 1 septembre : décaler au 2 septembre si possible. Merci bcp",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-01",
+   "return_date": "2026-09-02",
+   "vehicle_category": "4x4",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 27.12,
+  "customer": "Yassine D.",
+  "channel": "walk-in",
+  "message": "Salam, besoin d'une citadine pour la période du 14 au 21 septembre, retour Hay Riad.",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-14",
+   "return_date": "2026-09-21",
+   "vehicle_category": "citadine",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 27.01,
+  "customer": "Samir G.",
+  "channel": "facebook",
+  "message": "Bonjour l'équipe, besoin d'une berline manuelle pour la période du 5 au 8 septembre, retour Agdal.",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-05",
+   "return_date": "2026-09-08",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 26.53,
+  "customer": "Jean-Marc N.",
+  "channel": "whatsapp",
+  "message": "Bonjour, c'est combien une citadine du 15 au 16 septembre à l'aéroport Rabat-Salé ?",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-15",
+   "return_date": "2026-09-16",
+   "vehicle_category": "citadine",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 22.59,
+  "customer": "Laura T.",
+  "channel": "facebook",
+  "message": "Salam alikoum, location citadine 18-21 septembre svp, Hay Riad. Merci bcp",
+  "outcome": "approve_decline",
+  "complete_fields": {
+   "pickup_date": "2026-09-18",
+   "return_date": "2026-09-21",
+   "vehicle_category": "citadine",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 22.45,
+  "customer": "Loubna K.",
+  "channel": "whatsapp",
+  "message": "Bonjour l'équipe, une voiture pour ce week-end à l'aéroport Rabat-Salé, vous avez quoi ? Dites-moi le prix svp.",
+  "outcome": "complete_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-15",
+   "return_date": "2026-09-16",
+   "vehicle_category": "suv",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 22.39,
+  "customer": "Yassine D.",
+  "channel": "whatsapp",
+  "message": "Bonjour, je cherche une voiture berline du 20 au 22 septembre. Prise l'aéroport Rabat-Salé. C'est possible ?",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-20",
+   "return_date": "2026-09-22",
+   "vehicle_category": "berline",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 22.38,
+  "customer": "Famille Alaoui",
+  "channel": "whatsapp",
+  "message": "Bonjour, je cherche une voiture citadine automatique du 10 au 15 septembre. Prise Hay Riad. Merci bcp",
+  "outcome": "approve_decline",
+  "complete_fields": {
+   "pickup_date": "2026-09-10",
+   "return_date": "2026-09-15",
+   "vehicle_category": "citadine",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 22.14,
+  "customer": "Salma O.",
+  "channel": "whatsapp",
+  "message": "Salam, on est des clients réguliers, une 4x4 du 3 au 6 septembre à l'aéroport Rabat-Salé, un petit geste sur le prix serait apprécié 🙏",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-03",
+   "return_date": "2026-09-06",
+   "vehicle_category": "4x4",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 20.29,
+  "customer": "Laura T.",
+  "channel": "whatsapp",
+  "message": "Hello, dispo une utilitaire automatique du 11/09 au 13/09 ? Départ Hay Riad. Dites-moi le prix svp.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-11",
+   "return_date": "2026-09-13",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 19.75,
+  "customer": "Famille Idrissi",
+  "channel": "phone",
+  "message": "Salam, dispo une berline pour le week-end prochain ? Vous avez ça ?",
+  "outcome": "complete_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-25",
+   "return_date": "2026-09-27",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 18.3,
+  "customer": "Othmane F.",
+  "channel": "form",
+  "message": "Bonjour l'équipe, je voudrais une berline le 19 septembre pour 3 jours, l'aéroport Rabat-Salé. Est-ce qu'il y a une remise pour 3 jours ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-19",
+   "return_date": "2026-09-22",
+   "vehicle_category": "berline",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 17.38,
+  "customer": "Houda A.",
+  "channel": "facebook",
+  "message": "Salam alikoum, location utilitaire 24-28 septembre svp, Agdal. Vous avez ça ? On a déjà loué chez vous plusieurs fois.",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-24",
+   "return_date": "2026-09-28",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 16.96,
+  "customer": "Amine N.",
+  "channel": "whatsapp",
+  "message": "Bonsoir, besoin d'une citadine pour la période du 25 au 28 septembre, retour Hay Riad. Dites-moi le prix svp.",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-09-25",
+   "return_date": "2026-09-28",
+   "vehicle_category": "citadine",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 16.34,
+  "customer": "Othmane F.",
+  "channel": "facebook",
+  "message": "Bonjour l'équipe, location citadine 16-18 septembre svp, Agdal. Merci.",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-16",
+   "return_date": "2026-09-18",
+   "vehicle_category": "citadine",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 15.29,
+  "customer": "Famille Berrada",
+  "channel": "whatsapp",
+  "message": "Slt, besoin d'une utilitaire manuelle pour la période du 4 au 8 octobre, retour Hay Riad. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-04",
+   "return_date": "2026-10-08",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 14.38,
+  "customer": "Nadia C.",
+  "channel": "phone",
+  "message": "Bonsoir, je voudrais louer une utilitaire du 13 au 15 septembre, prise à l'aéroport Rabat-Salé.",
+  "outcome": "approve_decline",
+  "complete_fields": {
+   "pickup_date": "2026-09-13",
+   "return_date": "2026-09-15",
+   "vehicle_category": "utilitaire",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 11.97,
+  "customer": "Fatima-Zahra O.",
+  "channel": "whatsapp",
+  "message": "Salam alikoum, location suv 23-27 septembre svp, Hay Riad. Merci.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-23",
+   "return_date": "2026-09-27",
+   "vehicle_category": "suv",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 11.45,
+  "customer": "Jean-Marc N.",
+  "channel": "whatsapp",
+  "message": "Hello, besoin d'une 4x4 manuelle pour la période du 4 au 6 octobre, retour l'aéroport Rabat-Salé. Merci d'avance !",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-04",
+   "return_date": "2026-10-06",
+   "vehicle_category": "4x4",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 8.74,
+  "customer": "Jean-Marc N.",
+  "channel": "whatsapp",
+  "message": "Salam, une 4x4 manuelle du 9 au 10 octobre à l'aéroport Rabat-Salé, j'ai un budget de 3000 dh max. Merci.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-09",
+   "return_date": "2026-10-10",
+   "vehicle_category": "4x4",
+   "pickup_location": "Aeroport Rabat-Sale"
+  }
+ },
+ {
+  "days_ago": 7.9,
+  "customer": "Tarik R.",
+  "channel": "walk-in",
+  "message": "Salam, dispo une berline manuelle du 23/09 au 27/09 ? Départ Rabat. Vous avez ça ?",
+  "outcome": "approve_pending",
+  "complete_fields": {
+   "pickup_date": "2026-09-23",
+   "return_date": "2026-09-27",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 6.97,
+  "customer": "Mehdi N.",
+  "channel": "whatsapp",
+  "message": "Bonsoir, je voudrais louer une 4x4 du 4 au 5 octobre, prise à Agdal. Dites-moi le prix svp.",
+  "outcome": "approve_decline",
+  "complete_fields": {
+   "pickup_date": "2026-10-04",
+   "return_date": "2026-10-05",
+   "vehicle_category": "4x4",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 5.95,
+  "customer": "Walid C.",
+  "channel": "phone",
+  "message": "Bonsoir, je voudrais une berline le 10 novembre pour 3 jours, Rabat. Est-ce qu'il y a une remise pour 3 jours ? Merci bcp",
+  "outcome": "reject",
+  "complete_fields": {
+   "pickup_date": "2026-11-10",
+   "return_date": "2026-11-13",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 5.66,
+  "customer": "Hind K.",
+  "channel": "whatsapp",
+  "message": "Slt, dispo une 4x4 du 4/10 au 9/10 ? Départ Rabat. Merci.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-04",
+   "return_date": "2026-10-09",
+   "vehicle_category": "4x4",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 5.41,
+  "customer": "Driss L.",
+  "channel": "phone",
+  "message": "Salam alikoum, location berline 23-26 septembre svp, Rabat. Merci.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-23",
+   "return_date": "2026-09-26",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 4.77,
+  "customer": "Kenza A.",
+  "channel": "whatsapp",
+  "message": "Salam alikoum, c'est combien une citadine du 10 au 13 novembre à Agdal ? C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-11-10",
+   "return_date": "2026-11-13",
+   "vehicle_category": "citadine",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 4.2,
+  "customer": "Driss L.",
+  "channel": "facebook",
+  "message": "Salam, dispo une citadine manuelle du 18/11 au 20/11 ? Départ Agdal. Merci.",
+  "outcome": "approve_decline",
+  "complete_fields": {
+   "pickup_date": "2026-11-18",
+   "return_date": "2026-11-20",
+   "vehicle_category": "citadine",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 3.22,
+  "customer": "Walid C.",
+  "channel": "whatsapp",
+  "message": "Bonjour l'équipe, location citadine 4-6 octobre svp, Agdal. Merci bcp",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-04",
+   "return_date": "2026-10-06",
+   "vehicle_category": "citadine",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 2.79,
+  "customer": "Imane D.",
+  "channel": "facebook",
+  "message": "Bonjour l'équipe, je veux modifier ma réservation du 25 septembre : décaler au 27 septembre si possible. Merci bcp",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-09-25",
+   "return_date": "2026-09-27",
+   "vehicle_category": "suv",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 2.72,
+  "customer": "Jean-Marc N.",
+  "channel": "whatsapp",
+  "message": "Bonjour, dispo une berline manuelle du 16/11 au 23/11 ? Départ Rabat. C'est possible ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-11-16",
+   "return_date": "2026-11-23",
+   "vehicle_category": "berline",
+   "pickup_location": "Agdal"
+  }
+ },
+ {
+  "days_ago": 2.29,
+  "customer": "Meryem E.",
+  "channel": "facebook",
+  "message": "Salam, besoin d'une berline pour la période du 17 au 22 novembre, retour Hay Riad. Vous avez ça ?",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-11-17",
+   "return_date": "2026-11-22",
+   "vehicle_category": "berline",
+   "pickup_location": "Hay Riad"
+  }
+ },
+ {
+  "days_ago": 1.43,
+  "customer": "Samir G.",
+  "channel": "walk-in",
+  "message": "Hello, je voudrais louer une suv du 10 au 13 octobre, prise à Rabat.",
+  "outcome": "approve_accept",
+  "complete_fields": {
+   "pickup_date": "2026-10-10",
+   "return_date": "2026-10-13",
+   "vehicle_category": "suv",
+   "pickup_location": "Agdal"
+  }
+ }
+]

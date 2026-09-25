@@ -1,0 +1,20 @@
+services:
+  api:
+    build: ./backend
+    ports: ["8000:8000"]
+    environment:
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me-admin}
+      CORS_ORIGINS: http://localhost:5173,http://localhost:4173
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes: ["autoflow-data:/data"]
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    volumes: ["./frontend:/app"]
+    command: sh -c "npm install && npm run build && npx vite preview --host --port 4173"
+    environment: { VITE_API_URL: http://localhost:8000 }
+    ports: ["4173:4173"]
+    depends_on: [api]
+volumes:
+  autoflow-data:

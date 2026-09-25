@@ -1,0 +1,41 @@
+customer_id,name,phone_masked,is_vip,notes
+C-001,Famille Idrissi,06 XX XX XX 01,false,
+C-002,Famille Alaoui,07 XX XX XX 02,true,Clients réguliers (VIP) — Paiement à la remise des clés
+C-003,Youssef S.,06 XX XX XX 03,false,
+C-004,Imane D.,07 XX XX XX 04,false,Paiement à la remise des clés
+C-005,Famille Alaoui,07 XX XX XX 05,true,Clients réguliers (VIP) — Demande souvent l'aéroport
+C-006,Salma O.,07 XX XX XX 06,false,
+C-007,Mehdi N.,07 XX XX XX 07,false,Demande souvent l'aéroport
+C-008,Nadia C.,07 XX XX XX 08,false,
+C-009,Hamza L.,07 XX XX XX 09,false,Préfère WhatsApp
+C-010,Famille Berrada,07 XX XX XX 10,true,Clients réguliers (VIP)
+C-011,Amine N.,07 XX XX XX 11,false,Préfère WhatsApp
+C-012,Fatima-Zahra O.,07 XX XX XX 12,false,Paiement à la remise des clés
+C-013,Famille Idrissi,07 XX XX XX 13,false,Préfère WhatsApp
+C-014,Hind K.,07 XX XX XX 14,false,Client entreprise (facture)
+C-015,Anas T.,06 XX XX XX 15,true,Clients réguliers (VIP) — Client entreprise (facture)
+C-016,Meryem E.,06 XX XX XX 16,false,Demande souvent l'aéroport
+C-017,Ayoub D.,07 XX XX XX 17,false,Préfère WhatsApp
+C-018,Famille Bennani,06 XX XX XX 18,false,Demande souvent l'aéroport
+C-019,Ilyas T.,07 XX XX XX 19,false,Client entreprise (facture)
+C-020,Zineb L.,07 XX XX XX 20,false,Paiement à la remise des clés
+C-021,Tarik R.,06 XX XX XX 21,false,
+C-022,Kenza A.,06 XX XX XX 22,false,
+C-023,Bilal S.,07 XX XX XX 23,true,Clients réguliers (VIP)
+C-024,Loubna K.,07 XX XX XX 24,false,Préfère WhatsApp
+C-025,Adam T.,07 XX XX XX 25,false,Client entreprise (facture)
+C-026,Ghita B.,07 XX XX XX 26,false,
+C-027,Yassine D.,07 XX XX XX 27,false,Demande souvent l'aéroport
+C-028,Rim Z.,07 XX XX XX 28,false,Préfère WhatsApp
+C-029,Othmane F.,07 XX XX XX 29,false,Paiement à la remise des clés
+C-030,Aya C.,07 XX XX XX 30,false,Préfère WhatsApp
+C-031,Samir G.,07 XX XX XX 31,false,
+C-032,Houda A.,06 XX XX XX 32,true,Clients réguliers (VIP)
+C-033,Walid C.,06 XX XX XX 33,false,
+C-034,Famille Alaoui,07 XX XX XX 34,false,Demande souvent l'aéroport
+C-035,Jean-Marc N.,06 XX XX XX 35,false,
+C-036,Laura T.,06 XX XX XX 36,false,Client entreprise (facture)
+C-037,Ahmed E.,07 XX XX XX 37,false,
+C-038,Lina F.,06 XX XX XX 38,false,Paiement à la remise des clés
+C-039,Driss L.,07 XX XX XX 39,false,Préfère WhatsApp
+C-040,Ines Z.,06 XX XX XX 40,false,Préfère WhatsApp

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "min_days": 1,
+  "max_days": 30,
+  "max_auto_days": 14,
+  "buffer_hours": 4,
+  "shift_days_allowed": 3,
+  "category_fallbacks": {
+    "citadine": ["berline", "suv"],
+    "berline": ["suv", "citadine"],
+    "suv": ["berline", "4x4"],
+    "4x4": ["suv"],
+    "utilitaire": []
+  },
+  "confidence_threshold": 0.75,
+  "critical_field_threshold": 0.7,
+  "high_value_threshold_mad": 6000,
+  "follow_up": { "first_reminder_after_h": 24, "max_reminders": 2, "stale_after_h": 72 },
+  "auto_confirm": false,
+  "agency": {
+    "name": "Agence Mobilite Rabat",
+    "locations": ["Agdal", "Hay Riad", "Aeroport Rabat-Sale"],
+    "deposit_mad": 3000,
+    "km_per_day": 250
+  }
+}

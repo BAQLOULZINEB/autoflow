@@ -1,0 +1,308 @@
+"""AutoFlow API — FastAPI façade over the LangGraph orchestrator.
+
+Auth: every /api/* route except /api/health and /api/public/* requires the
+header `X-Admin-Token` (single shared token for the pilot; roles are carried
+in the `actor` field of each decision, e.g. "staff:Salma" / "manager:Omar").
+"""
+from __future__ import annotations
+
+from contextlib import asynccontextmanager
+
+from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+from sqlalchemy import select
+
+from . import clock
+from .config import get_settings
+from .db import Booking, Customer, Draft, Event, FollowUp, Request, Review, Setting, Vehicle, init_db, session
+from .rules import load_rules
+from . import simulations as sims
+from .workflow import orchestrator as orch
+from .workflow.explain import explain
+from .workflow.graph import get_graph
+from .workflow.store import IllegalTransition
+
+settings = get_settings()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    with session() as db:
+        if settings.seed_demo and db.get(Setting, "seeded_at") is None:
+            db.close()
+            orch.reset_and_seed()
+    yield
+
+
+app = FastAPI(title="AutoFlow API", version="0.1.0", lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=settings.cors_list or ["*"], allow_credentials=False,
+                   allow_methods=["*"], allow_headers=["*"])
+
+
+def auth(x_admin_token: str | None = Header(default=None)):
+    if x_admin_token != settings.admin_token:
+        raise HTTPException(401, "Token administrateur invalide.")
+
+
+# --------------------------------------------------------------------------- #
+# Schemas
+# --------------------------------------------------------------------------- #
+class IntakeIn(BaseModel):
+    message: str = Field(min_length=3, max_length=2000)
+    channel: str = "whatsapp"
+    customer_name: str = ""
+
+
+class DecisionIn(BaseModel):
+    action: str  # approve | edit | reject | close | complete | send_reminder | call_done
+    actor: str = "staff"
+    body: str | None = None
+    note: str = ""
+    fields: dict = Field(default_factory=dict)
+
+
+class CustomerReplyIn(BaseModel):
+    accepted: bool
+    actor: str = "staff"
+
+
+class AdvanceIn(BaseModel):
+    hours: float = 24
+
+
+class LoginIn(BaseModel):
+    token: str
+
+
+# --------------------------------------------------------------------------- #
+# Public
+# --------------------------------------------------------------------------- #
+@app.get("/api/health")
+def health():
+    return {"ok": True, "llm": settings.llm_provider, "version": "0.1.0", "clock": clock.now().isoformat(timespec="seconds")}
+
+
+@app.post("/api/public/intake")
+def public_intake(body: IntakeIn):
+    """Customer-facing form / n8n webhook target. No token: it only creates a request."""
+    rid = orch.submit(body.message, body.channel, body.customer_name)
+    return {"request_id": rid, "message": "Merci ! Votre demande a été reçue, l'agence revient vers vous rapidement."}
+
+
+@app.post("/api/auth/login")
+def login(body: LoginIn):
+    if body.token != settings.admin_token:
+        raise HTTPException(401, "Token invalide.")
+    return {"ok": True}
+
+
+# --------------------------------------------------------------------------- #
+# Requests
+# --------------------------------------------------------------------------- #
+def _req_dict(r: Request) -> dict:
+    return {"id": r.id, "customer_name": r.customer_name, "customer_id": r.customer_id, "channel": r.channel,
+            "raw_message": r.raw_message, "received_at": r.received_at.isoformat(timespec="seconds"),
+            "state": r.state, "intent": r.intent, "structured": r.structured, "availability": r.availability,
+            "followup": r.followup, "review_reason": r.review_reason, "review_level": r.review_level,
+            "priority": r.priority, "hops": r.hops, "updated_at": r.updated_at.isoformat(timespec="seconds")}
+
+
+@app.post("/api/requests", dependencies=[Depends(auth)])
+def create_request(body: IntakeIn):
+    rid = orch.submit(body.message, body.channel, body.customer_name)
+    return get_request(rid)
+
+
+@app.get("/api/requests", dependencies=[Depends(auth)])
+def list_requests(state: str | None = None, limit: int = 100):
+    orch.sweep()
+    with session() as db:
+        q = select(Request).order_by(Request.received_at.desc()).limit(limit)
+        if state:
+            q = q.where(Request.state == state)
+        return [_req_dict(r) for r in db.scalars(q)]
+
+
+@app.get("/api/requests/{rid}", dependencies=[Depends(auth)])
+def get_request(rid: str):
+    with session() as db:
+        r = db.get(Request, rid)
+        if not r:
+            raise HTTPException(404, "Demande introuvable.")
+        out = _req_dict(r)
+        out["drafts"] = [{"id": d.id, "kind": d.kind, "body_fr": d.body_fr, "generated_at": d.generated_at.isoformat(timespec="seconds"),
+                          "edited": d.edited, "sent_by": d.sent_by, "sent_at": d.sent_at.isoformat(timespec="seconds") if d.sent_at else None}
+                         for d in db.query(Draft).filter_by(request_id=rid).order_by(Draft.id)]
+        out["events"] = [{"id": e.id, "from": e.from_state, "to": e.to_state, "actor": e.actor, "reason": e.reason,
+                          "ts": e.ts.isoformat(timespec="seconds")} for e in db.query(Event).filter_by(request_id=rid).order_by(Event.id)]
+        out["reviews"] = [{"id": v.id, "reason": v.reason, "level": v.level, "priority": v.priority, "decision": v.decision,
+                           "actor": v.actor, "note": v.note, "opened_at": v.opened_at.isoformat(timespec="seconds"),
+                           "closed_at": v.closed_at.isoformat(timespec="seconds") if v.closed_at else None}
+                          for v in db.query(Review).filter_by(request_id=rid).order_by(Review.id)]
+        out["follow_ups"] = [{"id": f.id, "due_at": f.due_at.isoformat(timespec="seconds"), "reminder_no": f.reminder_no,
+                              "status": f.status, "outcome": f.outcome} for f in db.query(FollowUp).filter_by(request_id=rid).order_by(FollowUp.id)]
+    out["pending_interrupt"] = orch.pending_interrupt(rid)
+    return out
+
+
+@app.get("/api/requests/{rid}/trace", dependencies=[Depends(auth)])
+def trace(rid: str):
+    """Decision trace: graph path + every rule evaluated, for the 'Suivi en direct' panel."""
+    with session() as db:
+        if not db.get(Request, rid):
+            raise HTTPException(404, "Demande introuvable.")
+    return explain(rid, orch.pending_interrupt(rid))
+
+
+@app.get("/api/live", dependencies=[Depends(auth)])
+def live(since: int = 0, limit: int = 30):
+    """Live feed: events newer than `since` (event id) + queue size. Polled by the dashboard."""
+    orch.sweep()
+    with session() as db:
+        q = db.query(Event).filter(Event.id > since).order_by(Event.id.desc()).limit(limit)
+        evs = [{"id": e.id, "request_id": e.request_id, "from": e.from_state, "to": e.to_state, "actor": e.actor,
+                "reason": e.reason, "ts": e.ts.isoformat(timespec="seconds")} for e in q]
+        open_reviews = db.query(Review).filter(Review.closed_at.is_(None)).count()
+        last = db.query(Event.id).order_by(Event.id.desc()).first()
+    return {"events": evs, "last_id": last[0] if last else 0, "open_reviews": open_reviews,
+            "clock": clock.now().isoformat(timespec="seconds")}
+
+
+@app.post("/api/requests/{rid}/decision", dependencies=[Depends(auth)])
+def decide(rid: str, body: DecisionIn):
+    with session() as db:
+        r = db.get(Request, rid)
+        if not r:
+            raise HTTPException(404, "Demande introuvable.")
+        state = r.state
+    try:
+        if body.action == "send_reminder":
+            orch.send_reminder(rid, body.actor, body.body)
+        elif body.action in ("call_done",) or (state in ("needs_human", "stalled") and orch.pending_interrupt(rid) is None):
+            orch.staff_action_on_stalled(rid, body.action if body.action in ("close", "call_done") else "close", body.actor, body.note)
+        else:
+            orch.resume(rid, body.model_dump())
+    except (ValueError, IllegalTransition) as exc:
+        raise HTTPException(409, str(exc))
+    return get_request(rid)
+
+
+@app.post("/api/requests/{rid}/customer-reply", dependencies=[Depends(auth)])
+def customer_reply(rid: str, body: CustomerReplyIn):
+    try:
+        orch.customer_replied(rid, body.accepted, body.actor)
+    except IllegalTransition as exc:
+        raise HTTPException(409, str(exc))
+    return get_request(rid)
+
+
+# --------------------------------------------------------------------------- #
+# Queue / data / KPIs
+# --------------------------------------------------------------------------- #
+@app.get("/api/reviews", dependencies=[Depends(auth)])
+def open_reviews():
+    orch.sweep()
+    with session() as db:
+        rows = db.query(Review, Request).join(Request, Request.id == Review.request_id).filter(Review.closed_at.is_(None)) \
+            .order_by(Review.priority.desc(), Review.opened_at.asc()).all()
+        return [{"review_id": v.id, "request_id": r.id, "customer_name": r.customer_name, "channel": r.channel, "state": r.state,
+                 "level": v.level, "priority": v.priority, "reason": v.reason,
+                 "opened_at": v.opened_at.isoformat(timespec="seconds"), "intent": r.intent,
+                 "draft_kind": (r.followup or {}).get("draft_kind"), "action": (r.followup or {}).get("action")}
+                for v, r in rows]
+
+
+@app.get("/api/fleet", dependencies=[Depends(auth)])
+def fleet():
+    with session() as db:
+        vs = [{"id": v.id, "category": v.category, "model": v.model, "transmission": v.transmission, "location": v.location,
+               "status": v.status, "maintenance_until": v.maintenance_until, "daily_rate_mad": v.daily_rate_mad}
+              for v in db.query(Vehicle).order_by(Vehicle.id)]
+        bs = [{"id": b.id, "vehicle_id": b.vehicle_id, "request_id": b.request_id, "start_date": b.start_date,
+               "end_date": b.end_date, "status": b.status} for b in db.query(Booking).order_by(Booking.start_date)]
+        cs = [{"id": c.id, "name": c.name, "phone_masked": c.phone_masked, "is_vip": c.is_vip, "notes": c.notes}
+              for c in db.query(Customer)]
+    return {"vehicles": vs, "bookings": bs, "customers": cs}
+
+
+@app.get("/api/rules", dependencies=[Depends(auth)])
+def rules():
+    return load_rules()
+
+
+@app.get("/api/kpis", dependencies=[Depends(auth)])
+def kpis():
+    orch.sweep()
+    return orch.kpis()
+
+
+@app.get("/api/events", dependencies=[Depends(auth)])
+def events(limit: int = 50):
+    with session() as db:
+        return [{"id": e.id, "request_id": e.request_id, "from": e.from_state, "to": e.to_state, "actor": e.actor,
+                 "reason": e.reason, "ts": e.ts.isoformat(timespec="seconds")}
+                for e in db.query(Event).order_by(Event.id.desc()).limit(limit)]
+
+
+@app.get("/api/graph", dependencies=[Depends(auth)])
+def graph_mermaid():
+    return {"mermaid": get_graph().get_graph().draw_mermaid()}
+
+
+# --------------------------------------------------------------------------- #
+# Simulations (scripted business cases = demo + acceptance tests)
+# --------------------------------------------------------------------------- #
+@app.get("/api/simulations", dependencies=[Depends(auth)])
+def list_simulations():
+    return sims.catalogue()
+
+
+@app.post("/api/simulations/{key}/run", dependencies=[Depends(auth)])
+def run_simulation(key: str):
+    try:
+        return sims.run(key)
+    except KeyError:
+        raise HTTPException(404, "Simulation inconnue.")
+
+
+@app.post("/api/simulations/run-all", dependencies=[Depends(auth)])
+def run_all_simulations():
+    results = [sims.run(s["key"]) for s in sims.SIMULATIONS]
+    return {"ok": all(r["ok"] for r in results), "results": results}
+
+
+# --------------------------------------------------------------------------- #
+# Demo controls
+# --------------------------------------------------------------------------- #
+@app.get("/api/demo/scenarios", dependencies=[Depends(auth)])
+def scenarios():
+    return orch.scenarios()
+
+
+@app.post("/api/demo/load/{key}", dependencies=[Depends(auth)])
+def load_scenario(key: str):
+    for sc in orch.scenarios():
+        if sc["key"].upper() == key.upper():
+            rid = orch.submit(sc["message"], sc["channel"], sc["customer"])
+            return get_request(rid)
+    raise HTTPException(404, "Scénario inconnu.")
+
+
+@app.post("/api/demo/reset", dependencies=[Depends(auth)])
+def reset(history: bool = True):
+    """history=true replays 6 weeks of fictional activity; false = empty agency."""
+    orch.reset_and_seed(with_history=history)
+    return {"ok": True, "history": history}
+
+
+@app.post("/api/demo/advance", dependencies=[Depends(auth)])
+def advance(body: AdvanceIn):
+    clock.advance(body.hours)
+    return {"clock": clock.now().isoformat(timespec="seconds"), "sweep": orch.sweep()}
+
+
+@app.post("/api/demo/sweep", dependencies=[Depends(auth)])
+def sweep():
+    return orch.sweep()

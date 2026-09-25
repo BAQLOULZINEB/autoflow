@@ -1,0 +1,43 @@
+{
+  "name": "AutoFlow — Intake webhook (WhatsApp/Form → AutoFlow → Slack/Email notify)",
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "autoflow-intake", "responseMode": "lastNode" },
+      "name": "Webhook (WhatsApp / Typeform / site)", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST", "url": "={{ $env.AUTOFLOW_API_URL }}/api/public/intake",
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={{ { message: $json.body.message, channel: $json.body.channel || 'whatsapp', customer_name: $json.body.name || '' } }}"
+      },
+      "name": "POST AutoFlow /api/public/intake", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET", "url": "={{ $env.AUTOFLOW_API_URL }}/api/requests/{{ $json.request_id }}",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "X-Admin-Token", "value": "={{ $env.AUTOFLOW_ADMIN_TOKEN }}" } ] }
+      },
+      "name": "GET request state", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 0]
+    },
+    {
+      "parameters": { "conditions": { "string": [ { "value1": "={{ $json.review_level }}", "value2": "manager" } ] } },
+      "name": "Manager needed?", "type": "n8n-nodes-base.if", "typeVersion": 1, "position": [780, 0]
+    },
+    {
+      "parameters": { "text": "=🚨 AutoFlow {{ $json.id }} — {{ $json.review_reason }}\nClient : {{ $json.customer_name }}\nOuvrir : {{ $env.AUTOFLOW_ADMIN_URL }}/requests/{{ $json.id }}" },
+      "name": "Notify manager (Slack/WhatsApp/Email)", "type": "n8n-nodes-base.noOp", "typeVersion": 1, "position": [1040, -120]
+    },
+    {
+      "parameters": { "text": "=✅ AutoFlow {{ $json.id }} — {{ $json.review_reason }}\nOuvrir : {{ $env.AUTOFLOW_ADMIN_URL }}/requests/{{ $json.id }}" },
+      "name": "Notify staff", "type": "n8n-nodes-base.noOp", "typeVersion": 1, "position": [1040, 120]
+    }
+  ],
+  "connections": {
+    "Webhook (WhatsApp / Typeform / site)": { "main": [[{ "node": "POST AutoFlow /api/public/intake", "type": "main", "index": 0 }]] },
+    "POST AutoFlow /api/public/intake": { "main": [[{ "node": "GET request state", "type": "main", "index": 0 }]] },
+    "GET request state": { "main": [[{ "node": "Manager needed?", "type": "main", "index": 0 }]] },
+    "Manager needed?": { "main": [[{ "node": "Notify manager (Slack/WhatsApp/Email)", "type": "main", "index": 0 }], [{ "node": "Notify staff", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

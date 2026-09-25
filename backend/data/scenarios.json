@@ -1,0 +1,42 @@
+[
+  {
+    "key": "A",
+    "title": "Standard — complète, disponible",
+    "customer": "Karim B.",
+    "channel": "whatsapp",
+    "message": "Salam, je voudrais louer une citadine du 12 au 15 octobre, prise à l'agence de Rabat Agdal. C'est possible et c'est combien ?",
+    "expected": "intent=quote · citadine · 12→15/10 · CIT-03 disponible · brouillon devis · relance +24 h"
+  },
+  {
+    "key": "B",
+    "title": "Indisponible → alternative",
+    "customer": "Sara M.",
+    "channel": "whatsapp",
+    "message": "Bonjour, un SUV automatique du 20 au 27 octobre, retour aéroport Rabat-Salé svp.",
+    "expected": "SUV-01 en maintenance, SUV-02 réservé → alternatives : BER-02 (berline auto) ou décalage de dates"
+  },
+  {
+    "key": "C",
+    "title": "Ambiguë + sensible → humain",
+    "customer": "Famille Alaoui",
+    "channel": "whatsapp",
+    "message": "Slt, dispo une voiture pour le week-end prochain ? On est des clients réguliers, un petit geste sur le prix serait apprécié 🙏",
+    "expected": "dates ambiguës (conf. 0.55) · pas de catégorie · remise demandée → needs_human + escalade manager"
+  },
+  {
+    "key": "D",
+    "title": "Réclamation → escalade",
+    "customer": "Youssef T.",
+    "channel": "facebook",
+    "message": "La voiture de la semaine dernière avait un problème de clim et personne ne répond.",
+    "expected": "intent=complaint → escalated (priorité haute), aucun brouillon automatique"
+  },
+  {
+    "key": "E",
+    "title": "Berline automatique — conflit partiel",
+    "customer": "Karim B.",
+    "channel": "form",
+    "message": "Bonjour, une berline automatique du 3 au 6 novembre à Agdal, merci.",
+    "expected": "BER-02 réservé 2→5/11 → alternative BER-01 (manuelle) ou décalage → brouillon alternative"
+  }
+]

@@ -1,0 +1,25 @@
+vehicle_id,category,model,transmission,location,status,maintenance_until,daily_rate_mad
+CIT-01,citadine,Dacia Sandero,manuelle,Agdal,active,,250
+CIT-02,citadine,Renault Clio,manuelle,Hay Riad,active,,260
+CIT-03,citadine,Hyundai i10,manuelle,Agdal,active,,230
+BER-01,berline,Dacia Logan,manuelle,Agdal,active,,320
+BER-02,berline,Peugeot 308,automatique,Agdal,active,,400
+SUV-01,suv,Dacia Duster,automatique,Agdal,maintenance,2026-10-22,450
+SUV-02,suv,Hyundai Tucson,automatique,Hay Riad,active,,550
+UTL-01,utilitaire,Renault Kangoo,manuelle,Hay Riad,active,,380
+CIT-04,citadine,Kia Picanto,manuelle,Hay Riad,active,,240
+CIT-05,citadine,Peugeot 208,manuelle,Agdal,active,,280
+CIT-06,citadine,Toyota Yaris,automatique,Agdal,active,,320
+CIT-07,citadine,Volkswagen Polo,manuelle,Aeroport Rabat-Sale,active,,270
+CIT-08,citadine,Renault Clio,automatique,Hay Riad,active,,300
+CIT-09,citadine,Dacia Sandero Stepway,manuelle,Aeroport Rabat-Sale,active,,265
+BER-03,berline,Hyundai Accent,automatique,Hay Riad,active,,380
+BER-04,berline,Toyota Corolla,automatique,Agdal,active,,450
+BER-05,berline,Skoda Octavia,automatique,Aeroport Rabat-Sale,active,,480
+BER-06,berline,Mercedes Classe A,automatique,Agdal,active,,700
+SUV-03,suv,Kia Sportage,automatique,Agdal,active,,600
+SUV-04,suv,Dacia Duster,manuelle,Aeroport Rabat-Sale,active,,420
+SUV-05,suv,Hyundai Creta,automatique,Hay Riad,active,,520
+SUV-06,suv,Peugeot 3008,automatique,Agdal,maintenance,2026-10-05,650
+4X4-01,4x4,Toyota Hilux,manuelle,Hay Riad,active,,800
+UTL-02,utilitaire,Fiat Doblo,manuelle,Agdal,active,,360
