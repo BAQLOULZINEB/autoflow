@@ -7,15 +7,18 @@ in the `actor` field of each decision, e.g. "staff:Salma" / "manager:Omar").
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from datetime import date
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from . import clock
+from . import analytics as bi
 from .config import get_settings
 from .db import Booking, Customer, Draft, Event, FollowUp, Request, Review, Setting, Vehicle, init_db, session
+from .excel_import import import_workbook
 from .rules import load_rules
 from . import simulations as sims
 from .workflow import orchestrator as orch
@@ -306,3 +309,115 @@ def advance(body: AdvanceIn):
 @app.post("/api/demo/sweep", dependencies=[Depends(auth)])
 def sweep():
     return orch.sweep()
+
+
+# --------------------------------------------------------------------------- #
+# Analytics & BI endpoints (AutoFlow Pro)
+# --------------------------------------------------------------------------- #
+@app.get("/api/bi/dashboard", dependencies=[Depends(auth)])
+def bi_dashboard():
+    return bi.dashboard_kpis()
+
+
+@app.get("/api/bi/revenue/daily", dependencies=[Depends(auth)])
+def bi_revenue_daily(month: int = 9, year: int = 2026):
+    return bi.revenue_by_day(month, year)
+
+
+@app.get("/api/bi/revenue/monthly", dependencies=[Depends(auth)])
+def bi_revenue_monthly():
+    return bi.revenue_by_month()
+
+
+@app.get("/api/bi/revenue/category", dependencies=[Depends(auth)])
+def bi_revenue_by_cat(month: int | None = None, year: int = 2026):
+    return bi.revenue_by_category(month, year)
+
+
+@app.get("/api/bi/expenses/category", dependencies=[Depends(auth)])
+def bi_expenses_cat(month: int | None = None, year: int = 2026):
+    return bi.expenses_by_category(month, year)
+
+
+@app.get("/api/bi/expenses/vehicle", dependencies=[Depends(auth)])
+def bi_expenses_vehicle(month: int | None = None, year: int = 2026):
+    return bi.expenses_by_vehicle(month, year)
+
+
+@app.get("/api/bi/fleet/categories", dependencies=[Depends(auth)])
+def bi_fleet_cats():
+    return bi.fleet_category_breakdown()
+
+
+@app.get("/api/bi/fleet/occupancy", dependencies=[Depends(auth)])
+def bi_fleet_occupancy(month: int | None = None, year: int = 2026):
+    return bi.occupancy_by_vehicle(month, year)
+
+
+@app.get("/api/bi/appointments", dependencies=[Depends(auth)])
+def bi_appointments(days: int = 14):
+    return bi.upcoming_appointments(days=days)
+
+
+@app.get("/api/bi/clients/top", dependencies=[Depends(auth)])
+def bi_top_clients(limit: int = 20):
+    return bi.client_ranking(limit)
+
+
+@app.get("/api/bi/locations", dependencies=[Depends(auth)])
+def bi_locations(month: int | None = None, year: int = 2026, limit: int = 200):
+    from .analytics import Location as Loc
+    from sqlalchemy import extract as ex
+    with session() as db:
+        q = db.query(Loc)
+        if month:
+            q = q.filter(ex("month", Loc.date_out) == month, ex("year", Loc.date_out) == year)
+        q = q.order_by(Loc.date_out.desc()).limit(limit)
+        return [{"id": l.id, "plate": l.plate, "cin": l.cin, "price_per_day": l.price_per_day,
+                 "date_out": l.date_out.isoformat(), "date_in": l.date_in.isoformat(),
+                 "days": l.days, "amount": l.amount, "channel": l.channel, "status": l.status}
+                for l in q.all()]
+
+
+@app.get("/api/bi/expenses", dependencies=[Depends(auth)])
+def bi_expenses_list(month: int | None = None, year: int = 2026, limit: int = 200):
+    from .analytics import Expense as Exp
+    from sqlalchemy import extract as ex
+    with session() as db:
+        q = db.query(Exp)
+        if month:
+            q = q.filter(ex("month", Exp.date) == month, ex("year", Exp.date) == year)
+        q = q.order_by(Exp.date.desc()).limit(limit)
+        return [{"id": e.id, "date": e.date.isoformat(), "plate": e.plate, "category": e.category,
+                 "amount": e.amount, "supplier": e.supplier, "note": e.note}
+                for e in q.all()]
+
+
+@app.get("/api/bi/appointments/list", dependencies=[Depends(auth)])
+def bi_appointments_list(days: int = 30):
+    return bi.upcoming_appointments(days=days)
+
+
+# --------------------------------------------------------------------------- #
+# Excel import
+# --------------------------------------------------------------------------- #
+@app.post("/api/excel/import", dependencies=[Depends(auth)])
+async def excel_import(file: UploadFile = File(...)):
+    if not file.filename or not file.filename.lower().endswith((".xlsx", ".xlsm")):
+        raise HTTPException(400, "Seuls les fichiers .xlsx sont acceptés.")
+    data = await file.read()
+    if len(data) > 50 * 1024 * 1024:
+        raise HTTPException(400, "Fichier trop volumineux (max 50 Mo).")
+    result = import_workbook(data)
+    return result.dict()
+
+
+@app.post("/api/excel/seed", dependencies=[Depends(auth)])
+def excel_seed():
+    """Load the generated demo workbook."""
+    from pathlib import Path
+    p = Path(__file__).resolve().parent.parent / "data" / "autoflow_agence.xlsx"
+    if not p.exists():
+        raise HTTPException(404, "Fichier de démonstration introuvable. Lancez generate_workbook.py.")
+    result = import_workbook(p.read_bytes())
+    return result.dict()

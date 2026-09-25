@@ -26,6 +26,19 @@ async function call<T>(method: string, path: string, body?: unknown, auth = true
   return res.json()
 }
 
+async function uploadFile<T>(path: string, file: File): Promise<T> {
+  const headers: Record<string, string> = { 'X-Admin-Token': tokenStore.get() }
+  const fd = new FormData()
+  fd.append('file', file)
+  const res = await fetch(`${BASE}${path}`, { method: 'POST', headers, body: fd })
+  if (!res.ok) {
+    let msg = res.statusText
+    try { msg = (await res.json()).detail || msg } catch { /* not json */ }
+    throw new ApiError(res.status, msg)
+  }
+  return res.json()
+}
+
 // ---- types (mirror backend schemas) -------------------------------------
 export type Structured = {
   intent: string; pickup_date: string | null; return_date: string | null; vehicle_category: string | null
@@ -63,6 +76,30 @@ export type SimResult = { key: string; title: string; channel: string; request_i
 export type SimCatalogue = { key: string; title: string; channel: string; customer: string; message: string; summary: string; proves: string[]; steps: { label: string; who: string }[] }
 export type Scenario = { key: string; title: string; customer: string; channel: string; message: string; expected: string }
 
+// ---- BI / analytics types ------------------------------------------------
+export type BiDashboard = {
+  revenue_month: number; revenue_prev_month: number; revenue_delta_pct: number | null
+  active_rentals: number; rentals_month: number; rentals_prev_month: number
+  total_vehicles: number; in_maintenance: number; occupancy_pct: number; rented_today: number
+  expenses_month: number; expenses_prev_month: number; profit_month: number
+  avg_rental_days: number | null; avg_daily_rate: number | null
+  appointments_today: number; appointments_week: number
+  channels: { name: string; count: number }[]
+  clients_month: number; today: string
+}
+export type RevenuePoint = { date: string; revenue: number; count: number }
+export type MonthlyRevenue = { month: string; revenue: number; count: number }
+export type CategoryRevenue = { category: string; revenue: number; count: number }
+export type ExpenseCategory = { category: string; amount: number }
+export type ExpenseVehicle = { plate: string; amount: number }
+export type FleetCategory = { category: string; count: number }
+export type OccupancyItem = { vehicle_id: string; model: string; category: string; rented_days: number; occupancy_pct: number }
+export type AppointmentItem = { id: number; date: string; time: string; type: string; plate: string | null; cin: string | null; status: string; note: string }
+export type ClientRank = { cin: string; total: number; rentals: number }
+export type LocationRow = { id: string; plate: string; cin: string; price_per_day: number; date_out: string; date_in: string; days: number; amount: number; channel: string; status: string }
+export type ExpenseRow = { id: number; date: string; plate: string | null; category: string; amount: number; supplier: string; note: string }
+export type ExcelImportResult = { ok: boolean; sheets: Record<string, { importés: number; ignorés: number }>; warnings: string[]; errors: string[] }
+
 // ---- endpoints -----------------------------------------------------------
 export const api = {
   health: () => call<{ ok: boolean; llm: string; clock: string }>('GET', '/api/health', undefined, false),
@@ -89,6 +126,69 @@ export const api = {
   loadScenario: (k: string) => call<ReqDetail>('POST', `/api/demo/load/${k}`),
   reset: () => call<{ ok: boolean }>('POST', '/api/demo/reset'),
   advance: (hours: number) => call<{ clock: string }>('POST', '/api/demo/advance', { hours }),
+
+  // BI / Analytics
+  biDashboard: () => call<BiDashboard>('GET', '/api/bi/dashboard'),
+  biRevenueDaily: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<RevenuePoint[]>('GET', `/api/bi/revenue/daily${qs ? '?' + qs : ''}`)
+  },
+  biRevenueMonthly: () => call<MonthlyRevenue[]>('GET', '/api/bi/revenue/monthly'),
+  biRevenueByCategory: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<CategoryRevenue[]>('GET', `/api/bi/revenue/category${qs ? '?' + qs : ''}`)
+  },
+  biExpensesCategory: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<ExpenseCategory[]>('GET', `/api/bi/expenses/category${qs ? '?' + qs : ''}`)
+  },
+  biExpensesVehicle: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<ExpenseVehicle[]>('GET', `/api/bi/expenses/vehicle${qs ? '?' + qs : ''}`)
+  },
+  biFleetCategories: () => call<FleetCategory[]>('GET', '/api/bi/fleet/categories'),
+  biFleetOccupancy: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<OccupancyItem[]>('GET', `/api/bi/fleet/occupancy${qs ? '?' + qs : ''}`)
+  },
+  biAppointments: (days?: number) => call<AppointmentItem[]>('GET', `/api/bi/appointments${days ? '?days=' + days : ''}`),
+  biTopClients: (limit?: number) => call<ClientRank[]>('GET', `/api/bi/clients/top${limit ? '?limit=' + limit : ''}`),
+  biLocations: (month?: number, year?: number, limit?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    if (limit !== undefined) p.set('limit', String(limit))
+    const qs = p.toString()
+    return call<LocationRow[]>('GET', `/api/bi/locations${qs ? '?' + qs : ''}`)
+  },
+  biExpensesList: (month?: number, year?: number, limit?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    if (limit !== undefined) p.set('limit', String(limit))
+    const qs = p.toString()
+    return call<ExpenseRow[]>('GET', `/api/bi/expenses${qs ? '?' + qs : ''}`)
+  },
+  biAppointmentsList: (days?: number) => call<AppointmentItem[]>('GET', `/api/bi/appointments/list${days ? '?days=' + days : ''}`),
+
+  // Excel import
+  excelImport: (file: File) => uploadFile<ExcelImportResult>('/api/excel/import', file),
+  excelSeed: () => call<ExcelImportResult>('POST', '/api/excel/seed'),
 }
 
 export const STATE_FR: Record<string, string> = {
@@ -101,3 +201,6 @@ export const INTENT_FR: Record<string, string> = {
 }
 export const fmtDate = (iso?: string | null) => iso ? new Date(iso).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—'
 export const fmtDay = (iso?: string | null) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR') : '—'
+export const fmtMAD = (n: number) => new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD', minimumFractionDigits: 0 }).format(n)
+export const fmtPct = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1)}%`
+export const fmtNum = (n: number) => new Intl.NumberFormat('fr-MA').format(n)

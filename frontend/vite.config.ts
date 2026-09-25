@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Dev: /api → FastAPI on :8000. Prod: set VITE_API_URL to the deployed backend.
+// AutoFlow Pro: frontend on :5174, backend on :8001
 export default defineConfig({
   plugins: [react()],
-  server: { proxy: { '/api': 'http://localhost:8000' } },
+  server: {
+    port: 5174,
+    proxy: { '/api': 'http://localhost:8001' },
+  },
 })

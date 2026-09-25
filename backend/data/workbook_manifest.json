@@ -1,0 +1,23 @@
+{
+ "generated_for": "2026-09-25",
+ "seed": 2026,
+ "vehicles": 38,
+ "customers": 200,
+ "rentals": 534,
+ "expenses": 219,
+ "appointments": 24,
+ "period": [
+  "2026-07-01",
+  "2026-09-30"
+ ],
+ "market_sources": [
+  "rakb.ma",
+  "oneclickdrive.ma",
+  "avito.ma",
+  "goride.ma",
+  "casaride.ma",
+  "mymobirent.com",
+  "banyolti.com",
+  "rayhane-cars.net"
+ ]
+}
