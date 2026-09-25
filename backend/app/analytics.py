@@ -267,6 +267,78 @@ def revenue_by_category(month: int | None = None, year: int = 2026) -> list[dict
             for k in cats if cats[k] > 0]
 
 
+def garage_overview(month: int | None = None, year: int = 2026) -> list[dict]:
+    """Per-vehicle detail card: plate, stats (revenue, expenses, rentals, occupancy), status."""
+    today = date.today()
+    with session() as db:
+        vehicles = db.query(Vehicle).order_by(Vehicle.category, Vehicle.id).all()
+    results = []
+    for v in vehicles:
+        with session() as db:
+            # Revenue from this vehicle's plate
+            rev_q = db.query(func.coalesce(func.sum(Location.amount), 0), func.count()).filter(Location.plate == v.plate)
+            if month:
+                rev_q = rev_q.filter(extract("month", Location.date_out) == month, extract("year", Location.date_out) == year)
+            rev, rental_count = rev_q.one()
+
+            # Occupancy days
+            occ_q = db.query(func.coalesce(func.sum(Location.days), 0)).filter(Location.plate == v.plate)
+            if month:
+                occ_q = occ_q.filter(extract("month", Location.date_out) == month, extract("year", Location.date_out) == year)
+            rented_days = occ_q.scalar()
+
+            # Expenses for this vehicle
+            exp_q = db.query(func.coalesce(func.sum(Expense.amount), 0)).filter(Expense.plate == v.plate)
+            if month:
+                exp_q = exp_q.filter(extract("month", Expense.date) == month, extract("year", Expense.date) == year)
+            expenses = exp_q.scalar()
+
+            # Is it currently rented?
+            currently_rented = db.query(func.count()).filter(
+                Location.plate == v.plate, Location.date_out <= today, Location.date_in > today
+            ).scalar() > 0
+
+            # Recent rentals (last 5)
+            recent = db.query(Location).filter(Location.plate == v.plate).order_by(Location.date_out.desc()).limit(5).all()
+
+            # Upcoming appointments
+            appts = db.query(Appointment).filter(
+                Appointment.plate == v.plate, Appointment.date >= today
+            ).order_by(Appointment.date).limit(3).all()
+
+        days_in_month = 30 if month else max(1, (today - date(year, 7, 1)).days)
+        occ_pct = min(100, round(rented_days / max(1, days_in_month) * 100, 1))
+
+        # Determine live status
+        if v.status == "maintenance":
+            live_status = "maintenance"
+        elif currently_rented:
+            live_status = "en_location"
+        else:
+            live_status = "disponible"
+
+        results.append({
+            "code": v.id, "plate": v.plate or v.id, "model": v.model,
+            "category": v.category, "transmission": v.transmission,
+            "location": v.location, "daily_rate": v.daily_rate_mad,
+            "status": live_status, "maintenance_until": v.maintenance_until,
+            "revenue": rev, "expenses": expenses, "profit": rev - expenses,
+            "rental_count": rental_count, "rented_days": rented_days,
+            "occupancy_pct": occ_pct,
+            "recent_rentals": [
+                {"id": r.id, "cin": r.cin, "date_out": r.date_out.isoformat(),
+                 "date_in": r.date_in.isoformat(), "days": r.days, "amount": r.amount,
+                 "channel": r.channel, "status": r.status}
+                for r in recent
+            ],
+            "appointments": [
+                {"date": a.date.isoformat(), "time": a.time, "type": a.type, "note": a.note}
+                for a in appts
+            ],
+        })
+    return results
+
+
 def client_ranking(limit: int = 20) -> list[dict]:
     """Top clients by total spend."""
     with session() as db:

@@ -1,4 +1,5 @@
 {
+  "id": "f6fec0ca-e6ad-4b32-b621-11549a758f93",
   "name": "AutoFlow — Intake webhook (WhatsApp/Form → AutoFlow → Slack/Email notify)",
   "nodes": [
     {

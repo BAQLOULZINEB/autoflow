@@ -17,10 +17,10 @@ export default function Login() {
         <h1>AutoFlow <span style={{ color: '#0e9c99', fontWeight: 800 }}>Pro</span></h1>
         <p className="muted">Espace admin — système d'automatisation supervisé des workflows d'une agence de location.</p>
         <label>Token administrateur</label>
-        <input type="password" value={token} onChange={e => setToken(e.target.value)} placeholder="change-me-admin" autoFocus />
+        <input type="password" value={token} onChange={e => setToken(e.target.value)} placeholder="123AZE" autoFocus />
         {err && <p className="alert" style={{ marginTop: 10 }}>{err}</p>}
         <button className="btn primary" style={{ width: '100%', marginTop: 14 }}>Entrer</button>
-        <p className="small muted" style={{ marginTop: 12 }}>Démo : le token par défaut est <code>change-me-admin</code>. Formulaire client public : <a href="/demande" style={{ color: 'var(--teal)' }}>/demande</a></p>
+        <p className="small muted" style={{ marginTop: 12 }}>Démo : le token est <code>123AZE</code>. Formulaire client public : <a href="/demande" style={{ color: 'var(--teal)' }}>/demande</a></p>
       </form>
     </div>
   )

@@ -5,6 +5,7 @@ from pathlib import Path
 os.environ["DATABASE_URL"] = "sqlite:///./test_autoflow.db"
 os.environ["CHECKPOINT_DB"] = "./test_ckpt.db"
 os.environ["LLM_PROVIDER"] = "none"
+os.environ["ADMIN_TOKEN"] = "test-autoflow-token"
 
 import pytest
 from fastapi.testclient import TestClient
@@ -14,7 +15,7 @@ from app.db import Request, session
 from app.main import app
 from app.workflow import orchestrator as o
 
-H = {"X-Admin-Token": "change-me-admin"}
+H = {"X-Admin-Token": os.environ["ADMIN_TOKEN"]}
 
 
 @pytest.fixture(scope="module")

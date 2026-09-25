@@ -1,0 +1,44 @@
+{
+  "id": "c7274c98-9b68-4f2f-a975-bdf3189f8e29",
+  "name": "AutoFlow - Demo local intake webhook",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "autoflow-demo-intake",
+        "responseMode": "lastNode"
+      },
+      "name": "Receive demo message",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "de99c6ad-1482-43bd-a487-b7f1c1d81956"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/api/public/intake",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { message: $json.body.message, channel: $json.body.channel || 'n8n-demo', customer_name: $json.body.customer_name || $json.body.name || '' } }}"
+      },
+      "name": "Create AutoFlow request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0]
+    }
+  ],
+  "connections": {
+    "Receive demo message": {
+      "main": [[{
+        "node": "Create AutoFlow request",
+        "type": "main",
+        "index": 0
+      }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

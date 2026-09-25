@@ -267,7 +267,7 @@ def _persist(fleet_map, clients_map, rentals, expenses, appointments):
         if fleet_map:
             db.execute(text("DELETE FROM vehicles"))
             for v in fleet_map.values():
-                db.add(Vehicle(id=v["code"], category=v["category"], model=v["model"],
+                db.add(Vehicle(id=v["code"], plate=v["plate"], category=v["category"], model=v["model"],
                                transmission=v["transmission"], location=v["location"],
                                status=v["status"], maintenance_until=v["maintenance_until"],
                                daily_rate_mad=v["rate"]))

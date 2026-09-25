@@ -88,7 +88,7 @@ def main(use_llm: bool = False) -> None:
     out = HERE / "report.md"
     out.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[:20]))
-    print(f"\n→ {out}")
+    print(f"\nReport generated: {out}")
 
 
 if __name__ == "__main__":

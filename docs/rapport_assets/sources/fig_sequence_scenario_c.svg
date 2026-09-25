@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-label="Séquence scénario ambigu avec remise">
+ <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#79d8d2"/></marker><style>.h{font:700 24px Arial;fill:#fffdf7}.t{font:400 18px Arial;fill:#c2d3dc}.s{font:600 16px Arial;fill:#99d9d5}.m{font:500 15px Arial;fill:#effcfb}.n{font:700 15px Arial;fill:#b8f4ed}.line{stroke:#4b6d7c;stroke-width:2;stroke-dasharray:8 7}.msg{stroke:#79d8d2;stroke-width:3;marker-end:url(#arr)}.human{stroke:#f6b65b;stroke-width:3;marker-end:url(#arr)}</style></defs>
+ <rect width="1600" height="1080" fill="#0b2434"/><text x="78" y="82" class="h">Scénario C — dates ambiguës et demande de remise</text><text x="78" y="115" class="t">Deux interruptions rendent la décision commerciale explicite et traçable.</text>
+ <g>
+  <g fill="#183c50" stroke="#79d8d2" stroke-width="2"><rect x="70" y="155" width="170" height="58" rx="15"/><rect x="300" y="155" width="170" height="58" rx="15"/><rect x="530" y="155" width="170" height="58" rx="15"/><rect x="760" y="155" width="170" height="58" rx="15"/><rect x="990" y="155" width="170" height="58" rx="15"/><rect x="1220" y="155" width="170" height="58" rx="15"/></g>
+  <text x="155" y="190" text-anchor="middle" class="h">Admin</text><text x="385" y="190" text-anchor="middle" class="h">FastAPI</text><text x="615" y="190" text-anchor="middle" class="h">LangGraph</text><text x="845" y="190" text-anchor="middle" class="h">Intake</text><text x="1075" y="190" text-anchor="middle" class="h">Disponibilité</text><text x="1305" y="190" text-anchor="middle" class="h">Manager</text>
+  <g class="line"><path d="M155 213V990"/><path d="M385 213V990"/><path d="M615 213V990"/><path d="M845 213V990"/><path d="M1075 213V990"/><path d="M1305 213V990"/></g>
+ </g>
+ <g>
+  <path class="msg" d="M155 270H385"/><text x="270" y="258" text-anchor="middle" class="m">POST /demo/load/C</text><text x="90" y="258" class="n">1</text>
+  <path class="msg" d="M385 330H615"/><text x="500" y="318" text-anchor="middle" class="m">invoke(thread=A-0003)</text><text x="90" y="318" class="n">2</text>
+  <path class="msg" d="M615 390H845"/><text x="730" y="378" text-anchor="middle" class="m">run_intake(message)</text><text x="90" y="378" class="n">3</text>
+  <path class="msg" d="M845 450H615"/><text x="730" y="438" text-anchor="middle" class="m">conf. dates 0,55 · remise</text><text x="90" y="438" class="n">4</text>
+  <rect x="500" y="480" width="230" height="56" rx="12" fill="#3d2d16" stroke="#f6b65b" stroke-width="2"/><text x="615" y="514" text-anchor="middle" class="m">route → clarify</text>
+  <path class="msg" d="M615 578H385"/><text x="500" y="566" text-anchor="middle" class="m">interrupt(payload)</text><text x="90" y="566" class="n">5</text>
+  <path class="human" d="M155 638H1305"/><text x="730" y="626" text-anchor="middle" class="m">compléter dates 24→26/10 + catégorie citadine</text><text x="90" y="626" class="n">6</text>
+  <path class="msg" d="M155 698H385"/><text x="270" y="686" text-anchor="middle" class="m">POST /decision: complete</text><text x="90" y="686" class="n">7</text>
+  <path class="msg" d="M385 758H615"/><text x="500" y="746" text-anchor="middle" class="m">Command(resume)</text><text x="90" y="746" class="n">8</text>
+  <path class="msg" d="M615 818H1075"/><text x="845" y="806" text-anchor="middle" class="m">check_availability → CIT-03 · 460 MAD</text><text x="90" y="806" class="n">9</text>
+  <rect x="500" y="846" width="230" height="56" rx="12" fill="#3d2d16" stroke="#f6b65b" stroke-width="2"/><text x="615" y="880" text-anchor="middle" class="m">route → sensitive</text>
+  <path class="msg" d="M615 944H385"/><text x="500" y="932" text-anchor="middle" class="m">interrupt(remise)</text><text x="90" y="932" class="n">10</text>
+  <path class="human" d="M1305 990H155"/><text x="730" y="978" text-anchor="middle" class="m">approbation manager → quote_ready → pending_customer</text><text x="90" y="978" class="n">11</text>
+ </g>
+ <rect x="78" y="1020" width="1312" height="35" rx="10" fill="#123446"/><text x="102" y="1044" class="s">Invariant : la disponibilité est calculée par code ; la remise et l’envoi restent une décision humaine.</text>
+</svg>

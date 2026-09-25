@@ -9,3 +9,10 @@ frontend/dist/
 .vercel
 *.db-shm
 *.db-wal
+.codex_build/
+backend/data/vehicle_image_cache/
+.env
+.env.local
+tmp/
+docs/build_rapport_full/
+docs/build_rapport_visuel/

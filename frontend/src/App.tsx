@@ -15,6 +15,7 @@ import Requests from './pages/Requests'
 import RequestDetail from './pages/RequestDetail'
 import NewRequest from './pages/NewRequest'
 import Fleet from './pages/Fleet'
+import Garage from './pages/Garage'
 
 // Engineering
 import Architecture from './pages/Architecture'
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="requests/:id" element={<RequestDetail />} />
           <Route path="new" element={<NewRequest />} />
           <Route path="fleet" element={<Fleet />} />
+          <Route path="garage" element={<Garage />} />
           {/* Engineering */}
           <Route path="architecture" element={<Architecture />} />
           <Route path="simulations" element={<Simulations />} />

@@ -100,6 +100,22 @@ export type LocationRow = { id: string; plate: string; cin: string; price_per_da
 export type ExpenseRow = { id: number; date: string; plate: string | null; category: string; amount: number; supplier: string; note: string }
 export type ExcelImportResult = { ok: boolean; sheets: Record<string, { importés: number; ignorés: number }>; warnings: string[]; errors: string[] }
 
+export type GarageRental = { id: string; cin: string; date_out: string; date_in: string; days: number; amount: number; channel: string; status: string }
+export type GarageAppointment = { date: string; time: string; type: string; note: string }
+export type GarageVehicle = {
+  code: string; plate: string; model: string; category: string; transmission: string
+  location: string; daily_rate: number; status: 'disponible' | 'en_location' | 'maintenance'
+  maintenance_until: string | null; revenue: number; expenses: number; profit: number
+  rental_count: number; rented_days: number; occupancy_pct: number
+  recent_rentals: GarageRental[]; appointments: GarageAppointment[]
+}
+export type OfficialVehicleImage = {
+  image_url: string | null
+  source_url: string | null
+  model_year: number | null
+  source_type: 'official' | 'agency' | 'kifal' | null
+}
+
 // ---- endpoints -----------------------------------------------------------
 export const api = {
   health: () => call<{ ok: boolean; llm: string; clock: string }>('GET', '/api/health', undefined, false),
@@ -185,6 +201,15 @@ export const api = {
     return call<ExpenseRow[]>('GET', `/api/bi/expenses${qs ? '?' + qs : ''}`)
   },
   biAppointmentsList: (days?: number) => call<AppointmentItem[]>('GET', `/api/bi/appointments/list${days ? '?days=' + days : ''}`),
+  biFleetGarage: (month?: number, year?: number) => {
+    const p = new URLSearchParams()
+    if (month !== undefined) p.set('month', String(month))
+    if (year !== undefined) p.set('year', String(year))
+    const qs = p.toString()
+    return call<GarageVehicle[]>('GET', `/api/bi/fleet/garage${qs ? '?' + qs : ''}`)
+  },
+  officialVehicleImage: (model: string) => call<OfficialVehicleImage>('GET', `/api/media/vehicle-image?model=${encodeURIComponent(model)}`),
+  warmVehicleImages: () => call<{ queued: number }>('POST', '/api/media/vehicle-images/warm'),
 
   // Excel import
   excelImport: (file: File) => uploadFile<ExcelImportResult>('/api/excel/import', file),

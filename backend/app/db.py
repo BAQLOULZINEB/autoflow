@@ -55,6 +55,7 @@ class Customer(Base):
 class Vehicle(Base):
     __tablename__ = "vehicles"
     id: Mapped[str] = mapped_column(String, primary_key=True)
+    plate: Mapped[str] = mapped_column(String, default="")  # matricule from Excel
     category: Mapped[str] = mapped_column(String)
     model: Mapped[str] = mapped_column(String)
     transmission: Mapped[str] = mapped_column(String, default="manuelle")

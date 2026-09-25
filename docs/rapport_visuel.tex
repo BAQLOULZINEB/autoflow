@@ -1,0 +1,431 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8
+% AutoFlow --- version concise et visuelle. Package with rapport_assets/ for Overleaf.
+\documentclass[11pt,a4paper,openany]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern,microtype,geometry,graphicx,xcolor,booktabs,tabularx,array}
+\usepackage{fancyhdr,titlesec,caption,enumitem,hyperref,float,setspace}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\geometry{top=2.2cm,bottom=2.2cm,left=2.25cm,right=2.25cm,headheight=15pt}
+\setstretch{1.08}
+\graphicspath{{rapport_assets/figures/}}
+
+\definecolor{navy}{HTML}{0B2434}
+\definecolor{teal}{HTML}{0D9F98}
+\definecolor{mint}{HTML}{DDF3F2}
+\definecolor{cream}{HTML}{FFF8EE}
+\definecolor{amber}{HTML}{F6B65B}
+\definecolor{ink}{HTML}{17324A}
+\definecolor{muted}{HTML}{61798A}
+\definecolor{alert}{HTML}{F7E5CD}
+% Palette officielle de la page de garde EMSI fournie par l'étudiante.
+\definecolor{emsiGreen}{RGB}{0,100,60}
+\definecolor{coverBlue}{RGB}{0,40,80}
+
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal,pdftitle={AutoFlow --- Rapport visuel},pdfauthor={Auteur a completer}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{muted}{\small\textit{AutoFlow --- rapport académique visuel}}}
+\fancyhead[R]{\textcolor{teal}{\thepage}}
+\fancyfoot[C]{\textcolor{muted}{\small EMSI Rabat --- 4IASD --- 2026--2027}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\textcolor{muted}{\small EMSI Rabat --- 4IASD --- 2026--2027}}\renewcommand{\headrulewidth}{0pt}}
+
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries\color{navy}}{\textcolor{teal}{\chaptertitlename\ \thechapter}}{12pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-8pt}{22pt}
+\titleformat{\section}{\normalfont\Large\bfseries\color{navy}}{\thesection}{.8em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{teal}}{\thesubsection}{.7em}{}
+\captionsetup{font=small,labelfont=bf,skip=7pt}
+
+\newtcolorbox{keybox}[1]{enhanced,breakable,colback=mint,colframe=teal,boxrule=.9pt,arc=4pt,
+  title=\textbf{#1},fonttitle=\color{navy},left=10pt,right=10pt,top=8pt,bottom=8pt}
+\newtcolorbox{riskbox}[1]{enhanced,breakable,colback=alert,colframe=amber,boxrule=.9pt,arc=4pt,
+  title=\textbf{#1},fonttitle=\color{navy},left=10pt,right=10pt,top=8pt,bottom=8pt}
+\newcommand{\reportauthor}{\textit{Nom et prénom à compléter}}
+\newcommand{\academicadvisor}{\textit{Encadrant académique à compléter}}
+\newcommand{\companyadvisor}{\textit{Tuteur entreprise à compléter}}
+\newcommand{\hostcompany}{\textit{Structure d'accueil à compléter}}
+\newcommand{\institutionlogo}[2]{\IfFileExists{rapport_assets/figures/#1}{\includegraphics[width=5cm]{#1}}{\fcolorbox{teal}{mint}{\parbox[c][1.4cm][c]{4.6cm}{\centering\bfseries\color{navy}#2}}}}
+\newcommand{\takeaway}[1]{\begin{keybox}{À retenir}#1\end{keybox}}
+\newcommand{\visualfigure}[3]{\begin{figure}[H]\centering\includegraphics[width=#1\linewidth]{#2}\caption{#3}\end{figure}}
+
+\begin{document}
+
+% ----------------------------- Cover -----------------------------
+% Reprend le gabarit blanc et vert EMSI validé, sans page de garde séparée.
+\begin{titlepage}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[emsiGreen] (current page.north west) rectangle ([xshift=1.5cm]current page.south west);
+  \fill[emsiGreen] (current page.south west) rectangle ([yshift=1.2cm]current page.south east);
+  \node[anchor=south,yshift=.3cm,text=white,font=\small\bfseries]
+    at (current page.south) {Année universitaire 2026--2027 \quad|\quad 4\textsuperscript{e} année IASD --- EMSI Rabat};
+\end{tikzpicture}
+\begin{center}
+\vspace*{.25cm}
+\begin{minipage}{.42\textwidth}\centering
+  \institutionlogo{logoEmsi.png}{EMSI\\Rabat}
+\end{minipage}\hfill
+\begin{minipage}{.42\textwidth}\centering
+  \institutionlogo{honoris_logo.png}{Honoris\\United Universities}
+\end{minipage}
+
+\vspace{.28cm}
+\textcolor{emsiGreen}{\rule{.75\linewidth}{.8pt}}\vspace{.15cm}
+
+{\large\textsc{\color{emsiGreen}\textbf{Ecole Marocaine des Sciences de l'Ingenieur}}}\\[.1cm]
+{\small\textit{Honoris United Universities --- EMSI Rabat}}\\[.12cm]
+{\large\textbf{Filière : Intelligence Artificielle \& Science des Données}}\\[.05cm]
+{\normalsize 4\textsuperscript{e} année --- 4IASD}
+
+\vspace{.45cm}
+\textcolor{emsiGreen}{\rule{.75\linewidth}{.8pt}}\vspace{.38cm}
+
+\begin{tcolorbox}[width=.78\textwidth,colback=white,colframe=emsiGreen,arc=4pt,boxrule=1.5pt,halign=center,
+  shadow={2pt}{-2pt}{0pt}{black!20}]
+  \textbf{\normalsize Rapport de Stage}\\[.12cm]
+  \textbf{\normalsize $\triangleright$ Projet \textit{AutoFlow} --- version concise et visuelle}
+\end{tcolorbox}
+
+\vspace{.48cm}
+{\LARGE\bfseries\color{coverBlue}AutoFlow : Système d'Automatisation\\[.15cm]
+Intelligent des Workflows d'Entreprise}\\[.25cm]
+{\small\itshape\color{coverBlue!80}Cas d'application : agence de location de voitures --- Rabat}
+
+\vspace{.38cm}
+\begin{minipage}{.82\textwidth}\centering
+\small
+\begin{tabular}{@{}r@{\hspace{.35cm}}l@{}}
+\textbf{Intitulé du stage :} & \textit{AI Engineer --- automatisation des workflows métier}\\[.18cm]
+\textbf{Encadrant académique :} & \academicadvisor\\[.16cm]
+\textbf{Tuteur entreprise :} & \companyadvisor\\[.16cm]
+\textbf{Entreprise d'accueil :} & \hostcompany\\[.32cm]
+\multicolumn{2}{c}{\textbf{Réalisé par :}}\\[.16cm]
+\multicolumn{2}{c}{\reportauthor}\\
+\end{tabular}
+\end{minipage}
+
+\vspace{.22cm}
+{\scriptsize\color{gray!100}\textit{Soutenue publiquement le :} \rule{3cm}{.4pt}}
+\end{center}
+\end{titlepage}
+
+\chapter*{Résumé exécutif}
+\addcontentsline{toc}{chapter}{Résumé exécutif}
+\begin{keybox}{Problème}
+Une agence reçoit des demandes sur des canaux dispersés. Les informations sont incomplètes, la disponibilité est vérifiée manuellement et les relances peuvent être oubliées. Ces frictions sont des hypothèses d'audit à vérifier sur site, non des constats chiffrés sur une agence réelle.
+\end{keybox}
+\begin{keybox}{Contribution}
+AutoFlow est un workflow supervisé : un orchestrateur LangGraph coordonne trois agents spécialisés (comprendre, vérifier, préparer), applique une matrice d'escalade et se suspend pour une décision humaine. La disponibilité est calculée par code ; le système ne transmet jamais de message au client sans clic humain.
+\end{keybox}
+\begin{riskbox}{Niveau de preuve}
+Les résultats de validation concernent un jeu fictif contrôlé : 16 tests automatisés et 45 messages étiquetés. Les effets sur les délais, les ventes ou la charge de travail doivent être mesurés durant un pilote avant toute conclusion métier.
+\end{riskbox}
+\clearpage
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+
+% ----------------------------- Chapter 1 -----------------------------
+\chapter{Contexte et problématique}
+\section{Le point de départ}
+AutoFlow étudie le traitement de demandes de location de voitures dans une PME de services à Rabat. Le projet ne cherche pas à remplacer la relation client : il rend visible une prochaine action, prépare le travail répétitif et conserve la décision commerciale à l'équipe.
+\begin{center}\begin{tabularx}{.92\linewidth}{>{\bfseries\color{teal}}p{.24\linewidth}X}
+Entrées & WhatsApp, réseaux sociaux, téléphone, formulaire, comptoir.\\
+Traitement & Compréhension du message, contrôle de disponibilité, préparation d'un brouillon, validation humaine.\\
+Sorties & Brouillon, escalade, relance planifiée, journal d'évènements, tableau de bord.\\
+\end{tabularx}\end{center}
+\takeaway{La valeur recherchée n'est pas une réponse automatique : c'est une coordination fiable entre les messages, les règles métier et les personnes.}
+\clearpage
+
+\section{Du chaos opérationnel au workflow supervisé}
+\visualfigure{.95}{fig_infographie_probleme_solution.png}{Du problème opérationnel à la réponse AutoFlow : structurer, vérifier, préparer et tracer.}
+\clearpage
+
+\section{Six frictions à mesurer pendant l'audit}
+\begin{table}[H]\centering\small
+\caption{Hypothèses de friction métier.}\begin{tabularx}{\linewidth}{>{\bfseries}c X X}\toprule
+ & Friction & Risque opérationnel\\\midrule
+F1 & Demandes dispersées & Re-saisie, oubli, information perdue\\
+F2 & Disponibilité manuelle & Réponse lente, conflit de réservation\\
+F3 & Questions répétitives & Attention de l'équipe consommée\\
+F4 & Relances oubliées & Devis non suivis\\
+F5 & Statut incertain & Coordination par mémoire ou messages\\
+F6 & Faible visibilité & Pilotage sans trace exploitable\\\bottomrule
+\end{tabularx}\end{table}
+\begin{riskbox}{Prudence méthodologique}Ces frictions guident le prototype. Elles doivent être confirmées par observation, entretien et mesure avant/après.\end{riskbox}
+\clearpage
+
+\section{Problématique et invariants}
+\begin{keybox}{Question de recherche}
+Comment transformer des demandes clients hétérogènes en un workflow d'aide à la décision qui accélère le traitement sans déléguer une décision sensible à un modèle ?
+\end{keybox}
+\begin{enumerate}[leftmargin=1.2cm,itemsep=8pt]
+\item \textbf{Aucun message client n'est envoyé seul.} Une décision humaine est requise.
+\item \textbf{Aucune disponibilité n'est inventée.} Le calcul est déterministe, séparé du LLM.
+\item \textbf{Toute décision est traçable.} Les transitions créent des évènements horodatés et justifiés.
+\end{enumerate}
+\takeaway{Ces invariants transforment la confiance en propriété vérifiable du système, pas en promesse de marketing.}
+\clearpage
+
+% ----------------------------- Chapter 2 -----------------------------
+\chapter{État de l'art et choix techniques}
+\section{Choisir une orchestration plutôt qu'une conversation libre}
+Un agent LLM autonome est inadapté lorsqu'une erreur affecte un prix, une réservation ou une réclamation. AutoFlow utilise un graphe d'états explicite : un noeud a une responsabilité, une transition a une raison, et un humain peut interrompre puis reprendre l'exécution.
+\begin{table}[H]\centering\small\caption{Comparaison de familles d'outils.}\begin{tabularx}{\linewidth}{l X X}\toprule
+Approche & Atout & Limite pour AutoFlow\\\midrule
+RPA / low-code & Connecteurs rapides & État métier et règles complexes limités\\
+LLM autonome & Langage naturel flexible & Risque d'invention ou d'action non contrôlée\\
+Multi-agent conversationnel & Rôles rapides à prototyper & Coordination implicite, audit difficile\\
+Graphe supervisé & États, pauses, reprise, trace & Conception initiale plus exigeante\\\bottomrule
+\end{tabularx}\end{table}
+\clearpage
+
+\section{Pourquoi LangGraph ?}
+\begin{keybox}{Propriétés recherchées}
+\begin{itemize}[leftmargin=1.2cm]
+\item \texttt{StateGraph} rend les branches et les sorties visibles.
+\item \texttt{interrupt()} suspend le travail au point de contrôle humain.
+\item \texttt{Command(resume)} reprend la même demande grâce au \texttt{thread\_id} et au checkpoint.
+\item Le graphe publié par l'API peut être comparé au code et à l'interface.
+\end{itemize}
+\end{keybox}
+\visualfigure{.88}{fig_graphe_langgraph.png}{Graphe d'orchestration : les agents proposent, l'orchestrateur route et l'humain décide.}
+\clearpage
+
+\section{Règles d'abord, LLM optionnel}
+\begin{table}[H]\centering\small\caption{Répartition des responsabilités.}\begin{tabularx}{\linewidth}{>{\bfseries}p{.25\linewidth}X X}\toprule
+Composant & Décision & Garantie recherchée\\\midrule
+Intake & Message vers données structurées & Preuve textuelle et confiance par champ\\
+Disponibilité & Véhicules et alternatives & Chevauchements, tampon, maintenance : code déterministe\\
+Suivi & Brouillon et relance & Prix injecté depuis les données ; aucun envoi autonome\\
+Orchestrateur & Routage et escalade & États légaux, motifs et acteurs journalisés\\\bottomrule
+\end{tabularx}\end{table}
+\begin{riskbox}{Evidence gate}Un champ proposé par un LLM est rejeté si son passage justificatif n'est pas présent dans le message source.\end{riskbox}
+\clearpage
+
+\section{Critères de décision et limites}
+\begin{enumerate}[leftmargin=1.2cm,itemsep=8pt]
+\item \textbf{Fiabilité :} les règles métier et les seuils sont versionnés dans \texttt{rules.json}.
+\item \textbf{Explicabilité :} le panneau de trace donne la règle, la valeur et la branche.
+\item \textbf{Réversibilité :} agents Python purs ; stockage SQLite en pilote, PostgreSQL possible ensuite.
+\item \textbf{Conformité :} minimisation des données, téléphones masqués dans les données fictives et validation humaine des actions sensibles.
+\end{enumerate}
+\takeaway{Le choix technique est justifié par des propriétés observables dans le dépôt, pas par des compteurs de popularité ou des promesses de modèle.}
+\clearpage
+
+% ----------------------------- Chapter 3 -----------------------------
+\chapter{Analyse des besoins}
+\section{Acteurs et responsabilités}
+\begin{table}[H]\centering\small\caption{Acteurs du workflow.}\begin{tabularx}{\linewidth}{>{\bfseries}p{.22\linewidth}X X}\toprule
+Acteur & Attend du système & Reste responsable de\\\midrule
+Client & Une réponse claire et cohérente & Ses informations et son choix\\
+Équipe & Une file priorisée et un brouillon & Relecture, modification, envoi\\
+Manager & Les exceptions visibles & Prix, remise, réclamation, clôture\\
+Administrateur & Des règles et une trace & Paramétrage et confidentialité\\\bottomrule
+\end{tabularx}\end{table}
+\visualfigure{.9}{fig_c4_contexte.png}{Vue contexte : la frontière du système exclut tout envoi client automatique.}
+\clearpage
+
+\section{Exigences fonctionnelles}
+\begin{table}[H]\centering\small\caption{Exigences centrales et preuve associée.}\begin{tabularx}{\linewidth}{>{\bfseries}p{.13\linewidth}X X}\toprule
+ID & Exigence & Preuve dans le projet\\\midrule
+RF1 & Structurer une demande & Agent Intake et tests de scénario\\
+RF2 & Vérifier ou proposer une alternative & Agent Availability déterministe\\
+RF3 & Préparer un brouillon et une relance & Agent FollowUp et journal\\
+RF4 & Escalader une réclamation & Scénario de réclamation\\
+RF5 & Escalader les cas sensibles & Matrice d'escalade et interruption\\
+RF6 & Ne rien envoyer automatiquement & Décision humaine requise\\
+RF7 & Planifier les relances & Horloge de démo et tests\\
+RF8 & Tracer les transitions & Table d'évènements\\\bottomrule
+\end{tabularx}\end{table}
+\clearpage
+
+\section{Périmètre V1}
+\begin{keybox}{Inclus}
+Formulaire public, saisie manuelle, webhook n8n, trois agents, orchestrateur, file de validation, suivi en direct, simulations, règles et gestion de flotte, journal d'évènements, import Excel.
+\end{keybox}
+\begin{keybox}{Webhook n8n validé de bout en bout}
+Le workflow publié \texttt{AutoFlow -- Demo local intake webhook} a été exécuté sur \texttt{/webhook/autoflow-demo-intake}. Il a créé la demande \texttt{A-0055} via la vraie API AutoFlow. Le protocole de rejeu et la réponse sont fournis dans \texttt{integrations/n8n/VERIFICATION\_WEBHOOK.md}.
+\end{keybox}
+\begin{riskbox}{Exclu volontairement}
+Paiement, tarification dynamique, connecteur WhatsApp réel, CRM/ERP, voix, maintenance prédictive, et tout envoi autonome. Une intégration ne sera ajoutée qu'après audit de besoin.
+\end{riskbox}
+\clearpage
+
+\section{Cadre de mesure du pilote}
+\begin{table}[H]\centering\small\caption{Indicateurs à mesurer, pas à promettre.}\begin{tabularx}{\linewidth}{X X X}\toprule
+Indicateur & Source & Comparaison pilote\\\midrule
+Temps de première réponse & évènements / brouillons & avant vs après\\
+Délai de devis & \texttt{received\_at} $\rightarrow$ \texttt{quote\_ready} & avant vs après\\
+Demandes complètes & données structurées & taux par canal\\
+Relances effectuées & \texttt{follow\_ups} & réalisées / dues\\
+Charge manuelle & observation et chronométrage & minutes / demande\\\bottomrule
+\end{tabularx}\end{table}
+\takeaway{Le pilote doit mesurer le travail déplacé vers l'humain autant que le temps économisé.}
+\clearpage
+
+% ----------------------------- Chapter 4 -----------------------------
+\chapter{Conception architecturale}
+\section{Vue conteneurs}
+\visualfigure{.94}{fig_c4_conteneurs.png}{Conteneurs : interface React, API FastAPI, orchestrateur, agents, règles et persistance.}
+\clearpage
+
+\section{Graphe et contrôle humain}
+\visualfigure{.92}{fig_graphe_langgraph.png}{Le graphe LangGraph réel : chemins standard, exceptions et interruption humaine.}
+\clearpage
+
+\section{États et transitions légales}
+\visualfigure{.94}{fig_machine_etats.png}{Machine à états : les alertes et les états terminaux restent explicitement distincts.}
+\clearpage
+
+\section{Séquence d'un cas sensible et déploiement}
+\visualfigure{.92}{fig_sequence_scenario_c.png}{Scénario C : une demande ambiguë avec remise nécessite deux décisions humaines.}
+\visualfigure{.84}{fig_c4_deploiement.png}{Options de déploiement : poste de démonstration, cloud pilote et mode serverless à contraintes explicites.}
+\takeaway{Le diagramme de séquence est la preuve narrative : le système vérifie avant de préparer, et une personne valide avant d'agir.}
+\clearpage
+
+% ----------------------------- Chapter 5 -----------------------------
+\chapter{Réalisation du workflow supervisé}
+\section{Trois agents, une responsabilité chacun}
+\begin{table}[H]\centering\small\caption{Contrat des agents.}\begin{tabularx}{\linewidth}{>{\bfseries}p{.2\linewidth}X X}\toprule
+Agent & Entrée / sortie & Contrôle principal\\\midrule
+Intake & Message $\rightarrow$ structure, confiance, preuves & Champs manquants ou incertains $\rightarrow$ humain\\
+Availability & Structure + flotte $\rightarrow$ options / raisons & Calcul déterministe, pas de LLM\\
+FollowUp & Offre vérifiée $\rightarrow$ brouillon / action & Prix de la base ; envoi hors de l'agent\\\bottomrule
+\end{tabularx}\end{table}
+\begin{keybox}{Orchestrateur}
+Il ne négocie ni ne rédige une décision commerciale. Il applique la machine d'états, les seuils, la matrice d'escalade et le checkpoint ; il journalise ensuite le chemin emprunté.
+\end{keybox}
+\clearpage
+
+\section{Expliquer le traitement}
+\visualfigure{.94}{fig_admin_live_trace.png}{Trace explicable : évènements, chemin exécuté, valeurs, seuils et branche de décision.}
+\clearpage
+
+\section{Gestion d'un scénario riche}
+\visualfigure{.92}{fig_sequence_scenario_c.png}{Une séquence qui démontre la reprise après complétion des données puis l'escalade de remise.}
+\begin{enumerate}[leftmargin=1.2cm]
+\item Dates ambiguës : le workflow prépare une question, puis s'interrompt.
+\item L'équipe complète les champs : la disponibilité est recalculée sur les informations corrigées.
+\item Remise demandée : le manager valide ou refuse la proposition avant qu'un brouillon puisse être envoyé.
+\end{enumerate}
+\clearpage
+
+\section{Difficultés rencontrées et corrections}
+\begin{table}[H]\centering\small\caption{Exemples de corrections découvertes par les simulations.}\begin{tabularx}{\linewidth}{X X X}\toprule
+Défaut & Risque & Correction\\\midrule
+Horloge de relance réinitialisée & Un lead ne devenait jamais \texttt{stalled} & Référence conservée sur la première réponse\\
+Intention information mal priorisée & Routage vers réservation & Règle ajoutée sur la formulation de question\\
+Token des tests ancien & Régression cachée après changement de configuration & Token isolé, injecté par les tests\\\bottomrule
+\end{tabularx}\end{table}
+\takeaway{Les simulations sont une forme de test d'acceptation : un parcours affiché à l'écran doit aussi passer dans la suite automatisée.}
+\clearpage
+
+% ----------------------------- Chapter 6 -----------------------------
+\chapter{API et expérience opérateur}
+\section{La file de validation}
+\visualfigure{.94}{fig_admin_queue.png}{Schéma de la file : priorité, niveau de revue, motif et actions avant toute sortie client.}
+\clearpage
+
+\section{Le suivi en direct}
+\visualfigure{.94}{fig_admin_live_trace.png}{Un écran de supervision rend le raisonnement consultable : événement, état, règle et seuil.}
+\clearpage
+
+\section{Les simulations métier}
+\visualfigure{.94}{fig_admin_simulations.png}{Sept cas opérationnels servent à la démonstration et à la validation d'acceptation.}
+\clearpage
+
+\section{API, données et sécurité}
+\begin{table}[H]\centering\small\caption{Contrat API et séparation des données.}\begin{tabularx}{\linewidth}{>{\bfseries}p{.28\linewidth}X}\toprule
+Élément & Règle\\\midrule
+Administration & Token dans l'en-tête \texttt{X-Admin-Token}; les tests injectent leur propre token.\\
+Formulaire public & Entrée de demande uniquement ; pas d'accès aux données d'administration.\\
+Journal & Évènements, brouillons, revues et relances permettent le calcul d'indicateurs.\\
+Données de V1 & Jeu fictif généré, utilisé pour démonstration et évaluation contrôlée.\\
+Import Excel & Données d'agence chargées pour l'interface ; non utilisées pour publier les métriques de V1.\\\bottomrule
+\end{tabularx}\end{table}
+\takeaway{La sécurité et la qualité du rapport reposent sur une même séparation : configuration, données d'interface et données d'évaluation ne doivent pas être confondues.}
+\clearpage
+
+% ----------------------------- Chapter 7 -----------------------------
+\chapter{Évaluation, limites et perspectives}
+\section{Méthode de validation}
+\begin{keybox}{Trois niveaux de preuve}
+\textbf{1. Implémentation :} tests end-to-end et simulations. \textbf{2. Qualité d'extraction :} comparaison aux étiquettes du jeu fictif. \textbf{3. Impact métier :} protocole avant/après à exécuter en pilote ; aucun gain n'est déclaré avant cette mesure.
+\end{keybox}
+\begin{table}[H]\centering\small\caption{Résultats reproductibles sur le jeu contrôlé.}\begin{tabularx}{.88\linewidth}{X c c}\toprule
+Mesure & Résultat & Périmètre\\\midrule
+Tests automatisés & 16 passed & workflow + simulations/catalogue\\
+\texttt{pickup\_date} & 39/44 (89\%) & demandes devis / modification\\
+\texttt{return\_date} & 36/44 (82\%) & demandes devis / modification\\
+\texttt{vehicle\_category} & 40/44 (91\%) & demandes devis / modification\\
+Intention & 45/45 (100\%) & 45 messages fictifs\\
+Erreurs observées routées à l'humain & 8/8 & même échantillon\\\bottomrule
+\end{tabularx}\end{table}
+\clearpage
+
+\section{Lecture correcte des résultats}
+\visualfigure{.91}{fig_admin_simulations.png}{Les simulations relient l'exigence métier, l'exécution API et une assertion vérifiable.}
+\begin{riskbox}{Ce que les résultats ne prouvent pas}
+Ils ne démontrent ni un gain de vente, ni un gain de temps en agence, ni une performance LLM sur des messages réels. Les messages et étiquettes sont issus du même générateur ; le résultat est donc optimiste par construction.
+\end{riskbox}
+\clearpage
+
+\section{Limites et gestion des risques}
+\begin{table}[H]\centering\small\caption{Limites déclarées et prochaine preuve nécessaire.}\begin{tabularx}{\linewidth}{X X}\toprule
+Limite & Étape suivante\\\midrule
+Échantillon fictif et petit & 30 messages réels anonymisés, annotés indépendamment\\
+Moteur LLM non évalué en situation & Essai contrôlé avec journal de correction humaine\\
+Pas de KPI métier réel & Audit court puis pilote de 2--4 semaines\\
+Connecteurs réels exclus & Notification interne d'abord, jamais envoi autonome\\
+Configuration locale & Déploiement pilote avec secrets et volume persistant\\\bottomrule
+\end{tabularx}\end{table}
+\clearpage
+
+\section{Bilan et feuille de route}
+\begin{enumerate}[leftmargin=1.3cm,itemsep=9pt]
+\item \textbf{Audit :} suivre cinq demandes réelles, cartographier les canaux et mesurer la ligne de base.
+\item \textbf{Pilote :} utiliser AutoFlow en observation, comparer délais, complétude et relances ; garder l'envoi humain.
+\item \textbf{Décision :} poursuivre uniquement si l'équipe confirme une valeur opérationnelle et un niveau de confiance acceptable.
+\item \textbf{Évolution :} connecter les canaux en périphérie, renforcer la confidentialité, puis étudier la généralisation à un autre métier.
+\end{enumerate}
+\takeaway{La contribution principale n'est pas un modèle nouveau ; c'est une discipline d'AI engineering : métiers, règles, contrôle humain, mesures et traces.}
+\clearpage
+
+\chapter*{Conclusion générale}
+\addcontentsline{toc}{chapter}{Conclusion générale}
+AutoFlow montre comment une demande client peut devenir un workflow explicable sans devenir une décision autonome. L'architecture compacte, le calcul déterministe de disponibilité, la validation humaine et le journal d'évènements fournissent une base crédible pour un pilote. Le rapport fait une distinction volontaire entre ce qui est implémenté, ce qui est validé dans un environnement contrôlé et ce qui reste à mesurer en agence.
+
+\begin{keybox}{Message final pour le jury}
+Le système ne promet pas de remplacer l'équipe. Il rend le travail visible, vérifiable et plus facile à coordonner ; l'équipe conserve la responsabilité des décisions commerciales.
+\end{keybox}
+\clearpage
+
+\chapter*{Bibliographie sélective}
+\addcontentsline{toc}{chapter}{Bibliographie sélective}
+\begin{enumerate}[leftmargin=1.6em,itemsep=5pt]
+\item LangChain, \emph{LangGraph documentation --- interrupts, persistence and human-in-the-loop}, documentation officielle, consultée le 25 septembre 2026. \url{https://docs.langchain.com/oss/python/langgraph/interrupts}
+\item FastAPI, \emph{FastAPI documentation}, documentation officielle, consultée le 25 septembre 2026. \url{https://fastapi.tiangolo.com/}
+\item S. Brown, \emph{The C4 model for visualising software architecture}. \url{https://c4model.com/}
+\item National Institute of Standards and Technology, \emph{AI Risk Management Framework (AI RMF 1.0)}, NIST AI 100-1, 2023.
+\item B. Amershi et al., \emph{Guidelines for Human-AI Interaction}, CHI, 2019.
+\item Royaume du Maroc, \emph{Loi n\textdegree{} 09-08 relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel}, 2009.
+\item Documentation interne : \texttt{docs/00-CONTEXTE.md}, \texttt{docs/02-architecture.md}, \texttt{docs/05-evaluation.md}, \texttt{backend/eval/report.md}.
+\end{enumerate}
+
+\appendix
+\chapter{Reproduction et fichiers fournis}
+\begin{keybox}{Compilation Overleaf}
+Téléverser ce fichier ou \texttt{rapport.tex} avec le dossier complet \texttt{rapport\_assets/}. Choisir pdfLaTeX. Les logos officiels sont facultatifs : le document compile avec un fallback textuel.
+\end{keybox}
+\begin{keybox}{Validation du prototype}
+Depuis \texttt{backend/} : \texttt{..\\.venv\\Scripts\\python.exe -m pytest -q}, puis \texttt{python -m eval.eval\_intake}. Les commandes et la provenance des figures sont détaillées dans \texttt{rapport\_assets/README.md}.
+\end{keybox}
+
+\end{document}

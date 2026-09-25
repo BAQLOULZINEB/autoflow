@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="Machine à états AutoFlow">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#83d9d3"/></marker>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity=".48"/></filter>
+    <style>
+      .kicker{font:600 19px Arial,sans-serif;letter-spacing:4px;fill:#b8f4ed}.title{font:700 43px Arial,sans-serif;fill:#fffdf7}.sub{font:400 21px Arial,sans-serif;fill:#b5c6d2}.state{font:700 22px Arial,sans-serif;fill:#f8fafc}.small{font:400 16px Arial,sans-serif;fill:#a9c2cf}.edge{fill:none;stroke:#83d9d3;stroke-width:3;marker-end:url(#arrow)}.edge2{fill:none;stroke:#6c8594;stroke-width:2.5;stroke-dasharray:9 8;marker-end:url(#arrow)}.label{font:600 15px Arial,sans-serif;fill:#b8f4ed}.legend{font:600 16px Arial,sans-serif;fill:#d8eced}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#0b2434"/>
+  <path d="M0 780 C330 650 520 910 860 780 S1330 660 1600 780 V900 H0Z" fill="#0f3143" opacity=".8"/>
+  <text x="92" y="93" class="kicker">ARCHITECTURE · CONTRÔLE DU PROCESSUS</text>
+  <text x="92" y="148" class="title">Machine à états : chaque demande a un état explicite</text>
+  <text x="92" y="186" class="sub">Les transitions illégales sont bloquées par le store ; les cas sensibles restent dans la file humaine.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="94" y="300" width="180" height="92" rx="22" fill="#183c50" stroke="#83d9d3" stroke-width="3"/><text x="184" y="345" text-anchor="middle" class="state">new</text><text x="184" y="372" text-anchor="middle" class="small">demande reçue</text>
+    <rect x="353" y="300" width="202" height="92" rx="22" fill="#183c50" stroke="#83d9d3" stroke-width="3"/><text x="454" y="345" text-anchor="middle" class="state">incomplete</text><text x="454" y="372" text-anchor="middle" class="small">informations à compléter</text>
+    <rect x="640" y="300" width="178" height="92" rx="22" fill="#183c50" stroke="#83d9d3" stroke-width="3"/><text x="729" y="345" text-anchor="middle" class="state">checked</text><text x="729" y="372" text-anchor="middle" class="small">disponibilité vérifiée</text>
+    <rect x="905" y="300" width="205" height="92" rx="22" fill="#183c50" stroke="#83d9d3" stroke-width="3"/><text x="1008" y="345" text-anchor="middle" class="state">quote_ready</text><text x="1008" y="372" text-anchor="middle" class="small">brouillon préparé</text>
+    <rect x="1195" y="300" width="246" height="92" rx="22" fill="#183c50" stroke="#83d9d3" stroke-width="3"/><text x="1318" y="345" text-anchor="middle" class="state">pending_customer</text><text x="1318" y="372" text-anchor="middle" class="small">attente de réponse client</text>
+
+    <rect x="195" y="560" width="186" height="92" rx="22" fill="#4a3216" stroke="#f7ae57" stroke-width="3"/><text x="288" y="605" text-anchor="middle" class="state">stalled</text><text x="288" y="632" text-anchor="middle" class="small">relance / appel requis</text>
+    <rect x="540" y="560" width="220" height="92" rx="22" fill="#4a3216" stroke="#f7ae57" stroke-width="3"/><text x="650" y="605" text-anchor="middle" class="state">needs_human</text><text x="650" y="632" text-anchor="middle" class="small">décision ou précision</text>
+    <rect x="920" y="560" width="190" height="92" rx="22" fill="#4a3216" stroke="#f7ae57" stroke-width="3"/><text x="1015" y="605" text-anchor="middle" class="state">escalated</text><text x="1015" y="632" text-anchor="middle" class="small">validation manager</text>
+    <rect x="1210" y="560" width="194" height="92" rx="22" fill="#175c4d" stroke="#83d9d3" stroke-width="3"/><text x="1307" y="605" text-anchor="middle" class="state">confirmed</text><text x="1307" y="632" text-anchor="middle" class="small">réservation créée</text>
+    <rect x="1375" y="748" width="145" height="78" rx="22" fill="#175c4d" stroke="#83d9d3" stroke-width="3"/><text x="1448" y="794" text-anchor="middle" class="state">closed</text>
+  </g>
+
+  <path class="edge" d="M274 346 H353"/><text x="312" y="330" class="label">intake</text>
+  <path class="edge" d="M555 346 H640"/><text x="588" y="330" class="label">champs complets</text>
+  <path class="edge" d="M818 346 H905"/><text x="840" y="330" class="label">devis</text>
+  <path class="edge" d="M1110 346 H1195"/><text x="1127" y="330" class="label">validation équipe</text>
+  <path class="edge" d="M1318 392 V560"/><text x="1335" y="490" class="label">acceptation</text>
+  <path class="edge" d="M1195 371 C1105 440 980 462 790 542"/><text x="956" y="461" class="label">ambiguïté / remise</text>
+  <path class="edge" d="M640 392 V560"/><text x="658" y="483" class="label">données manquantes</text>
+  <path class="edge" d="M1210 368 C1130 502 1060 502 1015 560"/><text x="1120" y="523" class="label">cas sensible</text>
+  <path class="edge" d="M1307 652 V748 H1448"/><text x="1346" y="731" class="label">clôture</text>
+  <path class="edge" d="M288 560 C340 472 560 469 640 392"/><text x="399" y="468" class="label">retour équipe</text>
+  <path class="edge2" d="M540 606 H381"/><text x="422" y="592" class="label">relance échue</text>
+  <path class="edge2" d="M760 606 H920"/><text x="790" y="592" class="label">niveau manager</text>
+  <path class="edge2" d="M920 630 C840 750 738 752 729 392"/><text x="803" y="740" class="label">ré-vérifier</text>
+
+  <g transform="translate(92 748)"><rect width="980" height="78" rx="18" fill="#102c3d" stroke="#315667"/><circle cx="38" cy="27" r="9" fill="#83d9d3"/><text x="58" y="33" class="legend">États de traitement</text><circle cx="300" cy="27" r="9" fill="#f7ae57"/><text x="320" y="33" class="legend">Alertes / décision humaine</text><circle cx="635" cy="27" r="9" fill="#4fd1ae"/><text x="655" y="33" class="legend">États terminaux</text><text x="28" y="62" class="small">Trait plein : transition principale · Trait pointillé : exception ou reprise contrôlée</text></g>
+</svg>

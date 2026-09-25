@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api, type SimCatalogue, type SimResult } from '../lib/api'
-import { Channel, IconBot, IconCheck, IconFlask, IconPlay, IconSpinner, IconUser, IconX } from '../components/Icons'
+import { api, type SimCatalogue, type SimResult, type Trace } from '../lib/api'
+import { Channel, IconBot, IconCheck, IconPlay, IconSpinner, IconUser, IconX } from '../components/Icons'
 import { StateBadge } from '../components/ui'
+import WorkflowSvg from '../components/WorkflowSvg'
 
 const WHO: Record<string, { label: string; cls: string; Icon: typeof IconUser }> = {
   client: { label: 'Client', cls: 'who-client', Icon: IconUser },
@@ -12,6 +13,73 @@ const WHO: Record<string, { label: string; cls: string; Icon: typeof IconUser }>
 }
 const REVEAL_MS = 700
 
+type RunPanel = {
+  title: string
+  phase: 'processing' | 'replaying' | 'done' | 'error'
+  result?: SimResult
+  trace?: Trace
+  visibleNodes: number
+  error?: string
+}
+
+function WorkflowPanel({ panel, onClose }: { panel: RunPanel; onClose: () => void }) {
+  const path = panel.trace?.path || []
+  const litPath = path.slice(0, panel.visibleNodes)
+  const currentNode = litPath.at(-1)
+  const isWorking = panel.phase === 'processing' || panel.phase === 'replaying'
+
+  return (
+    <div className="modal-overlay workflow-overlay" role="dialog" aria-modal="true" aria-label="Workflow en direct">
+      <section className="modal workflow-panel">
+        <div className="workflow-panel-head">
+          <div>
+            <div className="eyebrow"><span className={`live-dot ${isWorking ? '' : 'done'}`} /> WORKFLOW EN DIRECT</div>
+            <h2>{panel.title}</h2>
+            <p className="muted small">
+              {panel.phase === 'processing' && 'La demande entre dans le workflow…'}
+              {panel.phase === 'replaying' && 'Le chemin réellement suivi s’affiche étape par étape.'}
+              {panel.phase === 'done' && 'Traitement terminé. Vous pouvez consulter la demande complète.'}
+              {panel.phase === 'error' && 'Le scénario n’a pas pu être traité.'}
+            </p>
+          </div>
+          <button className="btn sm" onClick={onClose}>Masquer</button>
+        </div>
+
+        <div className="workflow-live-layout">
+          <div className="workflow-map">
+            <WorkflowSvg path={litPath} waiting={isWorking && currentNode === 'human_review'} compact />
+            {isWorking && <div className="workflow-now"><IconSpinner size={14} /> {currentNode ? `Étape active : ${currentNode.replaceAll('_', ' ')}` : 'Initialisation du workflow'}</div>}
+          </div>
+          <ol className="workflow-node-list">
+            {!panel.trace && <li className="workflow-node active"><IconSpinner size={14} /> Réception et préparation de la demande</li>}
+            {panel.trace?.steps.map(step => {
+              const active = litPath.includes(step.node)
+              const pending = !active
+              return (
+                <li key={step.node} className={`workflow-node ${active ? 'complete' : pending ? 'pending' : ''}`}>
+                  <span className="workflow-node-mark">{active ? <IconCheck size={14} /> : <span className="dot-idle" />}</span>
+                  <span><b>{step.title}</b><small>{active ? step.verdict : 'En attente'}</small></span>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+
+        {panel.error && <p className="alert">{panel.error}</p>}
+        <div className="workflow-panel-foot">
+          <span className={`tag ${panel.phase === 'done' && panel.result?.ok ? 'good' : panel.phase === 'error' ? 'bad' : ''}`}>
+            {isWorking ? 'Traitement en cours' : panel.result?.ok ? 'Scénario conforme' : 'Terminé'}
+          </span>
+          {panel.result && <div className="row-actions" style={{ marginTop: 0 }}>
+            <Link className="btn sm" to={`/requests/${panel.result.request_id}`}>Voir la demande →</Link>
+            <Link className="btn primary sm" to="/live">Voir le suivi en direct →</Link>
+          </div>}
+        </div>
+      </section>
+    </div>
+  )
+}
+
 /** Built-in business cases: each runs through the real API and asserts every step. */
 export default function Simulations() {
   const [cat, setCat] = useState<SimCatalogue[]>([])
@@ -20,23 +88,36 @@ export default function Simulations() {
   const [running, setRunning] = useState<string | null>(null)
   const [runningAll, setRunningAll] = useState(false)
   const [open, setOpen] = useState<string | null>(null)
+  const [panel, setPanel] = useState<RunPanel | null>(null)
   const timers = useRef<number[]>([])
   useEffect(() => { api.simulations().then(setCat); return () => timers.current.forEach(clearTimeout) }, [])
 
   const play = async (key: string) => {
+    const scenario = cat.find(s => s.key === key)
     setRunning(key); setOpen(key); setRevealed(r => ({ ...r, [key]: 0 }))
+    setPanel({ title: scenario?.title || 'Scénario', phase: 'processing', visibleNodes: 0 })
     try {
       const res = await api.runSimulation(key)
       setResults(r => ({ ...r, [key]: res }))
-      // reveal steps one by one so the audience follows the story
+      let trace: Trace | undefined
+      try { trace = await api.trace(res.request_id) } catch { /* The simulation result remains available. */ }
+      const nodeCount = trace?.path.length || 0
+      setPanel({ title: res.title, phase: 'replaying', result: res, trace, visibleNodes: 0 })
+      // Replay the verified execution so the workflow remains readable during a live presentation.
       await new Promise<void>(resolve => {
-        res.steps.forEach((_, i) => {
+        const frames = Math.max(res.steps.length, nodeCount, 1)
+        Array.from({ length: frames }, (_, i) => i).forEach(i => {
           timers.current.push(window.setTimeout(() => {
             setRevealed(r => ({ ...r, [key]: i + 1 }))
-            if (i === res.steps.length - 1) resolve()
+            setPanel(current => current?.result?.request_id === res.request_id
+              ? { ...current, visibleNodes: Math.min(nodeCount, i + 1), phase: i === frames - 1 ? 'done' : 'replaying' }
+              : current)
+            if (i === frames - 1) resolve()
           }, REVEAL_MS * (i + 1)))
         })
       })
+    } catch (error) {
+      setPanel(current => current ? { ...current, phase: 'error', error: error instanceof Error ? error.message : 'Erreur inconnue.' } : current)
     } finally { setRunning(null) }
   }
   const playAll = async () => {
@@ -119,6 +200,7 @@ export default function Simulations() {
           )
         })}
       </div>
+      {panel && <WorkflowPanel panel={panel} onClose={() => setPanel(null)} />}
       <p className="small muted" style={{ marginTop: 14 }}>Ces mêmes scénarios servent aussi de tests automatiques pour garantir que le système fonctionne correctement.</p>
     </>
   )

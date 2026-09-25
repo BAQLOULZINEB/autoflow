@@ -757,6 +757,46 @@ tr.row { cursor: pointer; }
   overflow-y: auto;
   animation: slide-up .25s ease;
 }
+.workflow-panel {
+  width: min(1080px, 94vw);
+  max-width: 1080px;
+  padding: 22px;
+}
+.workflow-panel-head, .workflow-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.workflow-panel-head h2 { margin: 4px 0; }
+.eyebrow { color: var(--teal); font-size: 11px; font-weight: 800; letter-spacing: .08em; display: flex; align-items: center; gap: 7px; }
+.live-dot.done { background: var(--green); animation: none; }
+.workflow-live-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, .8fr); gap: 16px; margin: 18px 0; align-items: start; }
+.workflow-map { min-width: 0; }
+.workflow-now { display: flex; gap: 7px; align-items: center; color: #0b6b69; font-weight: 700; font-size: 12px; margin: 9px 2px 0; }
+.workflow-node-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; max-height: 300px; overflow: auto; }
+.workflow-node { display: flex; gap: 9px; align-items: flex-start; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; font-size: 12px; }
+.workflow-node.complete { background: #f2fbf7; border-color: #a7f3d0; }
+.workflow-node.pending { opacity: .58; }
+.workflow-node small { display: block; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+.workflow-node-mark { color: var(--green); display: inline-flex; padding-top: 1px; }
+.workflow-node.pending .workflow-node-mark { color: var(--muted); }
+.workflow-panel-foot { border-top: 1px solid var(--line); padding-top: 14px; }
+
+/* ── Garage: real vehicle photography ──────────────────────────────────── */
+.garage-vehicle-card { min-width: 0; }
+.garage-photo { height: 190px; position: relative; overflow: hidden; background: linear-gradient(135deg, #0b1f3a, #155e75); }
+.garage-photo.has-photo { background: #0b1f3a; }
+.garage-photo img { width: 100%; height: 100%; object-fit: cover; padding: 0; display: block; transition: transform .45s ease; }
+.garage-vehicle-card:hover .garage-photo img { transform: scale(1.045); }
+.garage-photo-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3, 11, 27, .12) 28%, rgba(3, 11, 27, .76) 100%); pointer-events: none; }
+.garage-category, .garage-status, .garage-attribution, .garage-photo-loading { position: absolute; font-size: 11px; font-weight: 700; }
+.garage-category { top: 12px; left: 12px; color: #fff; background: rgba(3, 11, 27, .68); padding: 4px 9px; border-radius: 99px; backdrop-filter: blur(4px); text-transform: uppercase; letter-spacing: .04em; }
+.garage-status { top: 12px; right: 12px; padding: 4px 9px; border-radius: 99px; }
+.garage-attribution, .garage-photo-loading { left: 14px; bottom: 12px; color: #fff; text-decoration: none; text-shadow: 0 1px 3px rgba(0,0,0,.75); }
+.garage-attribution:hover { text-decoration: underline; }
+.garage-photo-loading { opacity: .85; }
+.garage-vehicle-head { padding: 14px 20px 12px; border-bottom: 1px solid var(--line); }
+.garage-stat-grid { padding: 12px 18px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.garage-mini-kpi { min-width: 0; text-align: center; }
+.garage-mini-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; white-space: nowrap; }
+.garage-mini-value { font-size: clamp(13px, 1.12vw, 16px); font-weight: 800; color: var(--ink); white-space: nowrap; letter-spacing: -.025em; }
+.garage-mini-sub { font-size: 10px; color: var(--muted); }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slide-up { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -774,6 +814,7 @@ html.present .sim-label { font-size: 16px; }
   .sim-grid  { grid-template-columns: 1fr; }
   .grid.c4, .grid.c5 { grid-template-columns: repeat(2, 1fr); }
   .grid.c3 { grid-template-columns: 1fr 1fr; }
+  .workflow-live-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }

@@ -7,10 +7,12 @@ in the `actor` field of each decision, e.g. "staff:Salma" / "manager:Omar").
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
@@ -21,12 +23,14 @@ from .db import Booking, Customer, Draft, Event, FollowUp, Request, Review, Sett
 from .excel_import import import_workbook
 from .rules import load_rules
 from . import simulations as sims
+from .official_images import cached_vehicle_image, local_vehicle_image, resolve_official_image
 from .workflow import orchestrator as orch
 from .workflow.explain import explain
 from .workflow.graph import get_graph
 from .workflow.store import IllegalTransition
 
 settings = get_settings()
+image_warmer = ThreadPoolExecutor(max_workers=3, thread_name_prefix="vehicle-image-cache")
 
 
 @asynccontextmanager
@@ -220,7 +224,7 @@ def open_reviews():
 @app.get("/api/fleet", dependencies=[Depends(auth)])
 def fleet():
     with session() as db:
-        vs = [{"id": v.id, "category": v.category, "model": v.model, "transmission": v.transmission, "location": v.location,
+        vs = [{"id": v.id, "plate": v.plate, "category": v.category, "model": v.model, "transmission": v.transmission, "location": v.location,
                "status": v.status, "maintenance_until": v.maintenance_until, "daily_rate_mad": v.daily_rate_mad}
               for v in db.query(Vehicle).order_by(Vehicle.id)]
         bs = [{"id": b.id, "vehicle_id": b.vehicle_id, "request_id": b.request_id, "start_date": b.start_date,
@@ -352,6 +356,38 @@ def bi_fleet_cats():
 @app.get("/api/bi/fleet/occupancy", dependencies=[Depends(auth)])
 def bi_fleet_occupancy(month: int | None = None, year: int = 2026):
     return bi.occupancy_by_vehicle(month, year)
+
+
+@app.get("/api/bi/fleet/garage", dependencies=[Depends(auth)])
+def bi_fleet_garage(month: int | None = None, year: int = 2026):
+    return bi.garage_overview(month, year)
+
+
+@app.get("/api/media/vehicle-image", dependencies=[Depends(auth)])
+def official_vehicle_image(model: str):
+    """Return the commercial image published by the official model page."""
+    return resolve_official_image(model.strip())
+
+
+@app.get("/api/media/vehicle-image/file")
+def approved_vehicle_image_file(model: str):
+    """Serve one of the fixed, user-approved local photos for Garage."""
+    image = local_vehicle_image(model.strip()) or cached_vehicle_image(model.strip())
+    if image is None:
+        raise HTTPException(404, "Visuel véhicule introuvable.")
+    media_type = {
+        ".png": "image/png", ".webp": "image/webp", ".avif": "image/avif",
+    }.get(image.suffix.lower(), "image/jpeg")
+    return FileResponse(image, media_type=media_type)
+
+
+@app.post("/api/media/vehicle-images/warm", dependencies=[Depends(auth)])
+def warm_vehicle_images():
+    """Populate the local Garage image cache without delaying the UI."""
+    with session() as db:
+        models = sorted({model for model in db.scalars(select(Vehicle.model)).all() if model})
+    image_warmer.submit(lambda: [resolve_official_image(model) for model in models])
+    return {"queued": len(models)}
 
 
 @app.get("/api/bi/appointments", dependencies=[Depends(auth)])

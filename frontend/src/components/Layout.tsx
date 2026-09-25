@@ -78,7 +78,7 @@ export default function Layout() {
           <NavLink to="/live"><IconActivity size={16} /><span>Suivi en temps réel</span><span className="live-dot" /></NavLink>
           <NavLink to="/requests"><IconList size={16} /><span>Toutes les demandes</span></NavLink>
           <NavLink to="/new"><IconPlus size={16} /><span>Nouvelle demande</span></NavLink>
-          <NavLink to="/fleet"><IconCar size={16} /><span>Mes voitures</span></NavLink>
+          <NavLink to="/garage"><IconCar size={16} /><span>Mes voitures</span></NavLink>
 
           {/* ─── Système ─── */}
           <div className="nav-section">Système</div>
