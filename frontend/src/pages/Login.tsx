@@ -14,7 +14,7 @@ export default function Login() {
   return (
     <div className="login">
       <form className="card" onSubmit={submit}>
-        <h1>AutoFlow</h1>
+        <h1>AutoFlow <span style={{ color: '#0e9c99', fontWeight: 800 }}>Pro</span></h1>
         <p className="muted">Espace admin — système d'automatisation supervisé des workflows d'une agence de location.</p>
         <label>Token administrateur</label>
         <input type="password" value={token} onChange={e => setToken(e.target.value)} placeholder="change-me-admin" autoFocus />

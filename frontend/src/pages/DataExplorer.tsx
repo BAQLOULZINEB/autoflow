@@ -10,14 +10,15 @@ export default function DataExplorer() {
   const [expenses, setExpenses] = useState<ExpenseRow[]>([])
   const [loading, setLoading] = useState(true)
 
+  /* Fetch both datasets when month changes so tab counts are always accurate */
   useEffect(() => {
     setLoading(true)
-    if (tab === 'locations') {
-      api.biLocations(month, 2026, 500).then(setLocations).finally(() => setLoading(false))
-    } else {
-      api.biExpensesList(month, 2026, 500).then(setExpenses).finally(() => setLoading(false))
-    }
-  }, [tab, month])
+    Promise.all([
+      api.biLocations(month, 2026, 500),
+      api.biExpensesList(month, 2026, 500),
+    ]).then(([loc, exp]) => { setLocations(loc); setExpenses(exp) })
+      .finally(() => setLoading(false))
+  }, [month])
 
   const totalLoc = locations.reduce((s, l) => s + l.amount, 0)
   const totalExp = expenses.reduce((s, e) => s + e.amount, 0)
