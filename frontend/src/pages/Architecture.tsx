@@ -60,11 +60,53 @@ export default function Architecture() {
         </div>
       </div>
       <div className="card" style={{ marginTop: 14 }}>
+        <h2>Couche BI & Import de données</h2>
+        <div className="grid c3">
+          <div>
+            <h3>Pipeline Excel → SQLite</h3>
+            <p className="small muted">Import atomique d'un classeur .xlsx (5 feuilles : Flotte, Clients, Locations, Dépenses, RendezVous). Validation CIN marocain, détection doublons, correction automatique des dates inversées. Parsing via <code>openpyxl</code>.</p>
+          </div>
+          <div>
+            <h3>Moteur d'analytique temps réel</h3>
+            <p className="small muted">15+ endpoints BI calculés à la volée via SQLAlchemy (jamais de KPI stockés). CA journalier/mensuel, répartition dépenses, taux d'occupation par véhicule, ranking clients, canaux d'acquisition.</p>
+          </div>
+          <div>
+            <h3>Visualisation Chart.js</h3>
+            <p className="small muted">6 types de graphiques (area, bar, doughnut, horizontal bar). Palette 12 couleurs, tooltips en MAD, responsive. Données formatées côté client avec <code>react-chartjs-2</code>.</p>
+          </div>
+        </div>
+      </div>
+      <div className="card" style={{ marginTop: 14 }}>
         <h2>Principes de conception</h2>
         <div className="grid c3">
           <div><h3>Les agents proposent, l'orchestrateur route, l'humain décide</h3><p className="small muted">Aucune décision commerciale (prix, confirmation, réclamation) n'est prise par le système. Le routage suit une matrice d'escalade explicite.</p></div>
           <div><h3>Aucune disponibilité inventée</h3><p className="small muted">L'agent Disponibilité est du code déterministe sur la table flotte + règles. L'agent Intake ne garde un champ que s'il cite un passage exact du message.</p></div>
           <div><h3>Tout est tracé, tout est mesurable</h3><p className="small muted">Chaque transition écrit un événement (acteur, raison, horodatage). Les KPI sont calculés depuis le journal, jamais stockés.</p></div>
+        </div>
+      </div>
+      <div className="card" style={{ marginTop: 14 }}>
+        <h2>Stack technique</h2>
+        <div className="grid c2">
+          <div>
+            <h3>Backend</h3>
+            <ul className="small muted" style={{ paddingLeft: 16, lineHeight: 1.8 }}>
+              <li><strong>FastAPI</strong> — API REST async, 25+ endpoints</li>
+              <li><strong>LangGraph</strong> — orchestration multi-agents avec état persistant</li>
+              <li><strong>SQLAlchemy + SQLite</strong> — ORM, migrations, checkpointing</li>
+              <li><strong>openpyxl</strong> — parsing et validation Excel</li>
+              <li><strong>3 agents</strong> : Intake (extraction), Disponibilité (déterministe), Suivi (relance)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Frontend</h3>
+            <ul className="small muted" style={{ paddingLeft: 16, lineHeight: 1.8 }}>
+              <li><strong>React 18 + TypeScript</strong> — SPA avec Vite</li>
+              <li><strong>Chart.js + react-chartjs-2</strong> — graphiques BI interactifs</li>
+              <li><strong>React Router v6</strong> — navigation 3 sections</li>
+              <li><strong>Design system</strong> : Inter, densité dashboard, tokens CSS</li>
+              <li><strong>Mermaid.js</strong> — diagrammes d'architecture générés</li>
+            </ul>
+          </div>
         </div>
       </div>
     </>
